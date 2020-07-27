@@ -1,0 +1,19 @@
+{
+  "name": "vuepresstest",
+  "version": "1.0.0",
+  "description": "testje",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WimDejonghe/VuePressTest.git"
+  },
+  "author": "Wim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/WimDejonghe/VuePressTest/issues"
+  },
+  "homepage": "https://github.com/WimDejonghe/VuePressTest#readme"
+}
