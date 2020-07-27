@@ -8,7 +8,7 @@ title: [OOP 1 + 2]
 
 # Node-Red  
 
-![example image](node-red.png "An exemplary image")
+![example image](./images/node-red.png "An exemplary image")
 
 ---
 
