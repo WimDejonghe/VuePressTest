@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/WimDejonghe/VuePressTest/issues"
   },
-  "homepage": "https://github.com/WimDejonghe/VuePressTest#readme"
+  "homepage": "https://github.com/WimDejonghe/VuePressTest#readme",
+  "devDependencies": {
+    "vuepress": "^1.5.2"
+  }
 }
