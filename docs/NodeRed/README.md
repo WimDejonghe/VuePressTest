@@ -15,7 +15,7 @@ title: [NodeRed]
 Node-RED is een flow gebaseerde visuele ontwikkelomgeving ontwikkeld door IBM. Het laat toe
 hardware toestellen, API's en online diensten met elkaar te communiceren in het teken van het Internet of Things.
 
-![example image](nodered1.png "An exemplary image")
+![example image](./images/nodered1.png "An exemplary image")
 
 Het biedt een browsergebaseerde editor die het gemakkelijk maakt om flows met elkaar te verbinden met behulp van het brede scala aan nodes die met een klik kunnen worden ingezet tijdens
 de uitvoering.
@@ -329,7 +329,7 @@ De **Control** group bezit ook twee display nodes: *switch* en *slider*.
 
 Als je nu wilt via de **Control** group de **Display** group bedienen via een Node_red flow, dan zou die er zo uitzien:
 
-  ![example image](./images/node-red-dashboard-demo-flow.jpg "An exemplary image")  
+  ![example image](./images/node-red-dashboard-demo-flow.jpg "An exemplary image")  git status
 
 ---
 
