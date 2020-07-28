@@ -1,6 +1,6 @@
 module.exports = {
-    title: 'Object Oriented Programming with C++',
-    description: 'C++ Programming Course for VIVES University of Applied Sciences (Bachelor Degree)',
+    title: 'WebStekWim',
+    description: 'Short introduction NodeRed',
     themeConfig: {
       nav: [
       ],

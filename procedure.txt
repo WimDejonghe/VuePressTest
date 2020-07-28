@@ -1,0 +1,65 @@
+Maak een lokale map
+Maak een readme.md file aan in die map
+Start VS code en open die map in VSC
+
+Maak in github.com een nieuwe Repository aan: geef een naam, en onthou de SSH link
+
+In terminal (VSC) kan je (kan ook in PowerShell)
+
+git init
+git status
+git add readme.md
+git status
+git commit -m "eerste Sync"
+git remote add origin ::::: git@github.com:<HIER KOMT SSH LINK github repository> 
+
+vb:
+git@github.com:WimDejonghe/VuePressTest.git
+
+je geraakt hieraan door in github.com op de repository te klikken op Code
+
+git push -u origin master
+
+npm init    (om package.json te installeren en configureren)
+
+typ bij license MIT
+
+git add package.json
+
+git commit -m "package.json toevoegen"
+
+npm install -D vuepress
+
+maak een file .gitignore 
+edit file in VSC en type  regel node_modules/
+
+git status
+git add .
+git status
+git commit -m "vuepress toevoegen"
+
+edit package.json bestand
+wijzig en zet bij scripts volgende lijnen:
+"docs:dev": "vuepress dev docs",
+"docs:build": "vuepress build docs"
+
+npm run docs:dev
+
+er wordt een webserver gestart op 127.0.0.1:8081
+
+open config.js
+en pas aan title, description, sidebar   bij plugins staat vuepress-plugin-zooming
+pas bij repo aan naar eigen repository
+
+npm install -D vuepress-plugin-zooming
+
+npm run docs:dev
+CTRL-C
+git add.
+git commit -m "alles toevoegen"
+git push origin master
+
+
+Ga in netlify.com en verwijs naar github repository en laat de site maken
+
+
