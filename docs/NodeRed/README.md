@@ -3,7 +3,7 @@ author: [Wim Dejonghe]
 description: [Opbouw OOP lessen IoT.]
 ms.date: [CREATION/UPDATE DATE - mm/dd/yyyy]
 marp: true
-title: [OOP 1 + 2]
+title: [NodeRed]
 ---
 
 # Node-Red  
@@ -28,7 +28,7 @@ Flows kunnen tevens heel makkelijk worden geëxporteerd of geïmporteerd als JSO
 Node.js is een open-source, platform-onafhankelijke JavaScript runtime omgeving die  JavaScript-code buiten een browser uitvoert.
 De lichtgewicht runtime is gebouwd op Node.js en profiteert volledig van het eventbased, non-blocking async model. Dit maakt het ideaal om aan de rand van het netwerk te draaien op goedkope hardware zoals de Raspberry Pi en in de cloud. Met meer dan 225.000 modules in de packet repository van Node, is het eenvoudig om gamma aan nodes uit te breiden en zo nieuwe mogelijkheden toe te voegen.  
 
-![example image](nodejs.png "An exemplary image")
+![example image](./images/nodejs.png "An exemplary image")
 
 ---
 
@@ -71,7 +71,7 @@ Dit dien je telkens opnieuw te doen als je Node-RED wil gebruiken.
 # Werken met Node-Red
 Open een browser en surf naar http://127.0.0.1:1880.
 
-![example image](nodered1.png "An exemplary image")
+![example image](./images/nodered1.png "An exemplary image")
 
 ---
 
@@ -90,15 +90,15 @@ Een node kan ingangen en uitgangen hebben waarmee berichten tussen nodes kunnen 
 
 Een invoer kan verbindingen van meerdere nodes accepteren en een uitvoer kan naar meerdere nodes worden uitgevoerd.
 
-![example image](nodeflow.jpg "An exemplary image")
+![example image](./images/nodeflow.jpg "An exemplary image")
 
 Verbindingen worden gemaakt tussen nodes met een "Wire".
 
 Nodes zijn verzameld aan de linkerkant van de IDE en zijn onderverdeeld in categoriën.
 
-![example image](catnodes.png "An exemplary image") 
+![example image](./images/catnodes.png "An exemplary image") 
 
-![example image](node-red-screen.jpg "An exemplary image")
+![example image](./images/node-red-screen.jpg "An exemplary image")
 
 ---
 
@@ -116,7 +116,7 @@ Ieder node bezit eigenschappen (properties), die kunnen ingesteld worden door te
 # Een eenvoudige flow
 
 Je kan via een wire de inject node verbinden met de debug node. Zo maak je een eenvoudige flow.
-![example image](Basic-Flow-node-red.jpg "An exemplary image")
+![example image](./images/basic-flow-node-red.jpg "An exemplary image")
 Deze flow zal een unix timestamp injecteren in de debug node. Deze zal de payload van de message visualiseren, te zien aan de rechterkant van de IDE.
 
 ---
@@ -128,7 +128,7 @@ Bij de opstart van node red worden alle flows die ge-enabled staan automatisch g
 Als je een flow hebt ge-editeerd of een nieuwe flow hebt gemaakt dan is het noodzakelijk om eerst te deployen om alle aanpassingen te updaten.
 
 De deploy knop verkleurt van grijs naar rood wanneer er een wijziging is aangebracht aan de flow.  
-![example image](node-red-deploy.jpg "An exemplary image")
+![example image](./images/node-red-deploy.jpg "An exemplary image")
 Je kan ervoor kiezen om alle flows, gewijzigde flows of flows te restarten te deployen in de workspace.
 
 ---
@@ -149,15 +149,15 @@ Het message (msg) Object is een standard JavaScript object en bezit verchillende
 
 Je kan de message properties zien door die naar een debug node te sturen.
 
-![example image](node-red-debug-node.jpg "An exemplary image")
+![example image](./images/node-red-debug-node.jpg "An exemplary image")
 
 Standaard zal de debug node het msg.payload property displayen, maar je kan alle eigenschappen van de message displayen door alle eigenschappen te activeren (complete message object).
 
-![example image](node-red-debug-node-edit.jpg "An exemplary image")
+![example image](./images/node-red-debug-node-edit.jpg "An exemplary image")
 
 Een voorbeeld van het message object properties bij een inject node.
 
-![example image](inject-node-message-object.jpg "An exemplary image")
+![example image](./images/inject-node-message-object.jpg "An exemplary image")
 
 ---
 
@@ -177,7 +177,7 @@ Een msg object afkomstig van een MQTT input node bezit de volgende eigenschappen
 - _msgid
 - retain
 
- ![example image](node-red-view-properties.jpg "An exemplary image")
+ ![example image](./images/node-red-view-properties.jpg "An exemplary image")
 
  De _msgid property is een message identifier toegevoegd door node-red en  kan gebruikt worden om berichtobjecten terug te vinden.
 
@@ -197,7 +197,7 @@ Deze nodes zijn change, split, join, switch
 
 Informatie omtrent een node kan weergegeven worden door de node op een flow te slepen en te selecteren.
 
- ![example image](node-red-node-info.jpg "An exemplary image")
+ ![example image](./images/node-red-node-info.jpg "An exemplary image")
 
  Er is ook een veel gebruikte function node, maar daar is het noodzakelijk om de Javacode zelf te schrijven.
 
@@ -224,7 +224,7 @@ en kan dus ook bijgevolg worden gewijzigd bij het versturen van de message:
 
 Bij het wijzigen van een message wordt steeds verwezen naar de payload, maar je kan om het even welke eigenschap van de message wijzigen. Dit komt voor bij bijvoorbeeld de change node.
 
-  ![example image](msg-change-node-example.jpg "An exemplary image")
+  ![example image](./images/msg-change-node-example.jpg "An exemplary image")
 
 ---
 
@@ -286,7 +286,7 @@ Standaard is dit niet aanwezig in de Node-Red installatie. Dit is een module die
 ---
 De installatie zorgt ervoor dat er een nieuwe categorie aan de controls van Node-red worden toegevoegd aan de Node-Palette. Deze controls zijn UI (User Interface)-nodes. Ze bevatten zowel input- als output nodes. Wil je die gebruiken, sleep die dan gewoon op het canvas van Node-Red.
 
-  ![example image](node-red-dashboardA.jpg "An exemplary image")
+  ![example image](./images/node-red-dashboarda.jpg "An exemplary image")
 
 ---
 
@@ -295,7 +295,7 @@ De installatie zorgt ervoor dat er een nieuwe categorie aan de controls van Node
 Het dashboard of display nodes verschijnt in de User interface (UI) dashboard. Om die te bekijken gebruik de **url - host:1880/ui**  
 Dit zou er zo kunnen uitzien:
 
-  ![example image](node-red-dashboard-layout.jpg "An exemplary image")  
+  ![example image](./images/node-red-dashboard-layout.jpg "An exemplary image")  
 
 Je kan dus meerdere **display pages** hebben die **tabs** worden genoemd. Iedere tab bezit een **naam**.
 
@@ -307,7 +307,7 @@ Iedere dashboard-node bezit drie belangrijke instellingen (settings):
 - **Label Name** - Dit is de naam van het dashboard
 - **Name** - Dit is de naam van de Flow-Workspace.
 
-  ![example image](dashboard-node-properties.jpg "An exemplary image")  
+  ![example image](./images/dashboard-node-properties.jpg "An exemplary image")  
 
 ---
 
@@ -316,7 +316,7 @@ De layout van de User Interface (UI) kan opgemaakt worden via de dashboard tab (
 
 Nieuwe **tabs** en **groups** kunnen worden aangemaakt. Dit is meestal de plaats waar je start bij een nieuw design.
 
-  ![example image](node-red-dashboard-layout-1.jpg "An exemplary image")  
+  ![example image](./images/node-red-dashboard-layout-1.jpg "An exemplary image")  
 
 Het bovenste venster toont een flow met drie display tabs genaamd: *MyHome*, *Bedroom* en *Lounge*.
 
@@ -325,11 +325,11 @@ De **MyHome** tab bezit twee display Groups genaamd *display* en *control*.
 De **Display** group bezit twee display nodes: *Gauge* en *light status*.
 De **Control** group bezit ook twee display nodes: *switch* en *slider*.
 
-  ![example image](node-red-dashboard-ui.jpg "An exemplary image")  
+  ![example image](./images/node-red-dashboard-ui.jpg "An exemplary image")  
 
 Als je nu wilt via de **Control** group de **Display** group bedienen via een Node_red flow, dan zou die er zo uitzien:
 
-  ![example image](node-red-dashboard-demo-flow.jpg "An exemplary image")  
+  ![example image](./images/node-red-dashboard-demo-flow.jpg "An exemplary image")  
 
 ---
 
