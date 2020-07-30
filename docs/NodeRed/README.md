@@ -108,7 +108,7 @@ Er zijn twee nodes die je heel veel zult gebruiken.
 De Debug-node is te vergelijken met een breakpoint Debug knop in bijvoorbeeld Visual Studio.  Een Debug-node krijgt een message (msg) binnen en zal de inhoud ervan visualiseren in het Debug-venster.
 De inhoud van een message wordt de payload van de message genoemd.
 De Inject-node heeft als functie om een trigger te veroorzaken bij een event. Deze kan dus een flow activeren. De Inject-node geeft een message (msg) door via een Wire naar de volgende node.  
-![example image](node-properties.jpg "An exemplary image")
+![example image](./images/node-properties.jpg "An exemplary image")
 Ieder node bezit eigenschappen (properties), die kunnen ingesteld worden door te dubbelklikken op de node zelf met de RMK op de muis.  
 
 ---

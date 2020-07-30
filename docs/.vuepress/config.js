@@ -1,12 +1,16 @@
 module.exports = {
     title: 'WebStekWim',
-    description: 'Short introduction NodeRed',
+    description: 'Short introduction Iot',
     themeConfig: {
       nav: [
       ],
-      sidebar: [
-          'NodeRed/',
-                ],
+      sidebar: 
+        [ '/NodeRed/', '/serial/', '/mbedcpp/', ],
+       
+
+            
+              
+               
       sidebarDepth: 1,
       repo: 'WimDejonghe/VuePressTest',
       docsDir: 'docs',
