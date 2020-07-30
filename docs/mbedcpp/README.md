@@ -14,7 +14,7 @@ title: [MBED C++]
 
 ---
 
-C++ , Ce plus plus , is een programmeertaal die heel veel wordt gebruikt met betrekking tot microcontrollers. Net zoals in C# kunnen er applicaties worden geprogrammeerd die een logica uitvoeren op een bepaald elektronica platform. Dit kan een computer zijn, maar kan evengoed een klein microprocessor systeem zijn. Dergelijke kleine microcontrollers worden in heel veel elektronica toepassingen gebruikt. Een microgolgoven, kookfornuis, thermostaat, wasmachine, ... bevatten de dag van vandaag allemaal microcontrollers om de bediening van de machine te realiseren. Binnen een IoT systeem is een microcontroller niet weg te denken en speelt binnen het proces een belangrijke rol. Het is dus fundamenteel dat IoT-technicussen een zekere kennis hebben wat betreft microcontrollers.   
+C++ , Ce plus plus , is een programmeertaal die heel veel wordt gebruikt met betrekking tot microcontrollers. Net zoals in C# kunnen er applicaties worden geprogrammeerd die een logica uitvoeren op een bepaald elektronica platform. Dit kan een computer zijn, maar kan evengoed een klein microprocessor systeem zijn. Dergelijke kleine microcontrollers worden in heel veel elektronica toepassingen gebruikt. Een microgolgoven, kookfornuis, thermostaat, wasmachine, ... bevatten de dag van vandaag allemaal microcontrollers om de bediening van de machine te realiseren. Binnen een IoT systeem is een microcontroller niet weg te denken en speelt binnen het proces een belangrijke rol. Het is dus fundamenteel dat IoT-technicussen een zekere kennis hebben wat betreft microcontrollers.  
 
 Een Arduino is zo'n gekend voorbeeld van een microcontroller. Die wordt zeer veel gebruikt voor prototyping van een systeem. Het is alomgekend binnen de huis- keuken en hobby toepassingen. Met een dergelijke controller kan er een logisch proces geprogrammeerd worden. Hierbij wordt bijna altijd gebruikt gemaakt van digitale ingangen en digitale uitgangen. Zoals je in de lessen zal zien wordt zo'n logisch proces beschreven door een programma. Dit programma wordt geschreven in een programmeertaal. Arduino gebruikt een soort van C-taal. In deze lessen zal er gebruikt gemaakt worden van een veel krachtiger processor dan de Arduino. Hier wordt een Nucleo microcontroller bordje gebruikt. Een microcontroller wordt getypeerd door zijn rekenkracht. Die rekenkracht wordt door een aantal zaken bepaald. De twee belangrijkste zaken die hier een rol in spelen zijn de klokfrequentie van de processor en het aantal bits die in één keer kunnen worden verwerkt. Een arduino is een 8bit processor (kan dus 8 bits in één keer verwerken) en werkt op een klokfrequentie van 16Mhz. Onze Nucleo processor is een 32 bit RISC processor (kan dus 32 bits in één keer verwerken) en werkt op een klok frequentie van maar liefst 80Mhz. Deze processor kan dus veel sneller en meer berekeningen uitvoeren dan een Arduino.
 
@@ -60,12 +60,12 @@ Dan zie je de pinnummers die beschikbaar zijn voor gebruik:
 
 ![example image](./images/stm32l476.png "An exemplary image")
 
-De ene LED die beschikbaar is bezit ook een pinnummer (speciaal nummer = LED1). Je zou ook evengoed pinummer D3 kunnen gebruiken om een LED te schakelen. Maar dan moet je die wel zelf koppelen aan die pin volgens vorige schema's. 
+De ene LED die beschikbaar is bezit ook een pinnummer (speciaal nummer = LED1). Je zou ook evengoed pinummer D3 kunnen gebruiken om een LED te schakelen. Maar dan moet je die wel zelf koppelen aan die pin volgens vorige schema's.  
 
 Laten we verder werken met de LED die reeds aan boord is van het bordje. Maak en nieuwe applicatie binnen de IDE en programmeer volgende code:
 
 ```cpp
-//Nucleo_output, dit is commentaar 
+//Nucleo_output, dit is commentaar  
 #include "mbed.h"
 DigitalOut led(LED1);   //pin LED1 is een output pin en krijgt de naam led
 int main()              //hoofdprogramma
@@ -88,9 +88,9 @@ Kijk wat er gebeurt. Wijzig het programma een aantal keren.
 
 [YouTube]https://www.youtube.com/watch?v=XmWqP8laxxk
 
-Een bepaalde pin kan dus ook als ingang worden geprogrammeerd. Hier zal het logisch programma (de software) de toestand (voltage) van die pin gaan interpreteren. Is er op dat moment een spanning aan gekoppeld van 0V , dan zal de software dit als een NUL beschouwen, staat er echter 3V3 op die pin geschakeld, dan zal de software die toestand interpreteren als zijnde logisch EEN. 
+Een bepaalde pin kan dus ook als ingang worden geprogrammeerd. Hier zal het logisch programma (de software) de toestand (voltage) van die pin gaan interpreteren. Is er op dat moment een spanning aan gekoppeld van 0V , dan zal de software dit als een NUL beschouwen, staat er echter 3V3 op die pin geschakeld, dan zal de software die toestand interpreteren als zijnde logisch EEN.  
 
-De meest eenvoudige manier om een digitale ingang aan te sturen is met een drukknop. Deze kan twee toestanden bezitten OPEN of GESLOTEN. (zie video). Zoals in de video wordt aangegeven kan je dus een drukknop op twee manieren schakelen aan de ingang van een digitale poort. Actief hoog of actief laag. Het is zeer belangrijk dat je de werking van beide schakelingen goed begrijpt. Zie les. 
+De meest eenvoudige manier om een digitale ingang aan te sturen is met een drukknop. Deze kan twee toestanden bezitten OPEN of GESLOTEN. (zie video). Zoals in de video wordt aangegeven kan je dus een drukknop op twee manieren schakelen aan de ingang van een digitale poort. Actief hoog of actief laag. Het is zeer belangrijk dat je de werking van beide schakelingen goed begrijpt. Zie les.  
 
 ![example image](./images/button.jpg "An exemplary image")
 
@@ -99,7 +99,7 @@ Je kan het gebruik van een weerstand ook software matig oplossen. Dit gaan we hi
 Programmeren doe je zo om bijvoorbeeld de LED aan te sturen met de drukknop:
 
 ```cpp
-//Nucleo_output, dit is commentaar 
+//Nucleo_output, dit is commentaar  
 #include "mbed.h"
 DigitalOut led(LED1);           //pin LED1 is een output pin en krijgt de naam led
 DigitalIn knop(USER_BUTTON);    //pin USER_BUTTON is een input pin en krijgt de naam knop
@@ -128,22 +128,22 @@ Op het bordje is ook nog een potentiolmeter gemonteerd. Bestudeer de schakeling 
 
 # MBED C++ basics
 
-Dit hoofdstuk belicht de basics van de C++ programmeertaal. Dit is gelijkaardig aan de C# taal. 
+Dit hoofdstuk belicht de basics van de C++ programmeertaal. Dit is gelijkaardig aan de C# taal.  
 
 ## Variabelen
 
-Wanneer je data wil opslaan, bewaren, dan moet er een zekere plaats gereserveerd worden in het geheugen om die data in op te slaan. Afhankelijk van de vorm van die data zal er meer of minder ruimte moeten gereserveerd worden. Zo zijn er verschillende typen variabelen ontstaan. Op die manier kan er optimaal omgesprongen worden met het gebruik van het geheugen. Het is niet zinvol om honderden geheugenplaatsen te reserveren als er maar één enkele nul of één moet opgeslegen worden. Gelukkig moet de programmeur zelf die reservering niet voorzien. De programmeur dient enkel op te geven welk type variabele er nodig is, en de compiler zal zelf een bepaald geheugenruimte hiervoor aanwijzen en reserveren (kan dan niet voor iets anders gebruikt worden).
+Wanneer je data wil opslaan, bewaren, dan moet er een zekere plaats gereserveerd worden in het geheugen om die data in op te slaan. Afhankelijk van de vorm (hoeveel bits) van die data zal er meer of minder ruimte moeten gereserveerd worden. Zo zijn er verschillende typen variabelen ontstaan (datatypes). Op die manier kan er optimaal omgesprongen worden met het gebruik en het organiseren van het geheugen van het processorsysteem. Het is niet zinvol om honderden geheugenplaatsen te reserveren als er maar één enkele nul of één moet opgeslagen worden. Gelukkig moet de programmeur zelf die reservering niet voorzien. De programmeur dient enkel op te geven welk type variabele (datatype) er nodig is, en de compiler zal zelf een bepaalde geheugenruimte hiervoor aanwijzen en reserveren (kan dan niet voor iets anders gebruikt worden).
 
-Er bestaan veel soorten variabelen (en de programmeur kan ook zelf soorten aanmaken). Zo spreekt men in de softwarewereld over primitieve variabelen. Deze komen bijna in alle programmeertalen voor en worden ook zeer veel gebruikt. Het zijn als het ware de bouwstenen om data te manipuleren. Zulke type variabelen zijn eenvoudig en dienen om er envoudige bewerkingen mee te doen.
+Er bestaan veel soorten variabelen (datatypes), en de programmeur kan ook zelf soorten aanmaken. Zo spreekt men in de software-wereld over primitieve variabelen of primitieve datatypes. Deze komen bijna in alle programmeertalen voor en worden ook zeer veel gebruikt. Het zijn als het ware de bouwstenen om data te manipuleren (wat een logische software programma altijd doet). Zulke type variabelen zijn eenvoudig en dienen om er envoudige bewerkingen mee te doen.
 
-C++ ondersteunt volgende primitieve datatypes zoals weeregeven in volgende tabel.
+C++ ondersteunt volgende primitieve datatypes zoals weergegeven in volgende tabel.
 
 ![example image](./images/cpp_data_types.png "An exemplary image")
 
-Primitieve datatypes zijn basis types en kunnen direct worden toegepast in de programmeertaal. Ze zijn welomschreven naar wat er als data in kan worden weggeschreven (en natuurlijk ook achteraf weer worden gelezen). Een voudige bewerkingen kunnen er worden op uitgevoerd. Ze kunnen in hoofdzaak als volgt worden geclassificeerd:
+Primitieve datatypes zijn basis types en kunnen direct worden toegepast in de programmeertaal. Ze zijn welomschreven naar wat er als data in kan worden weggeschreven (en natuurlijk ook achteraf weer worden gelezen). Eenvoudige bewerkingen kunnen er worden op uitgevoerd. Ze kunnen in hoofdzaak als volgt worden geclassificeerd:
 
-> * Character types: Deze variabelen kunnen characters van het alfabet en tekens bevatten. Meestal worden characters (karakters) geconverteerd naar enen en nullen op basis van ASCII (zoek eens zo'n tabel op). Karakters zoals 'A' of '$' of '6'. De meest basis type voor dergelijke variabelen is 'char' en kan dus één enkel karakter bevatten. Bepaalde tekens hebben soms meer geheugenruimte nodig en dan volstaat 8 bit niet meer. Dan wordt een ander type gebruikt die bestaat uit meer bitlocaties in het geheugen.
-> * Numerische integer types: Deze variabelen kunnen getallen opslaan en verwerken. Getallen zoals 7 of 1024. Het kunnen enkel gehele getallen zijn , dus geen komma getallen. Ze kunnen in bepaalde omstandigheden een teken bevatten (positief of negatief). Maar bepaalde zijn 'unsigned' wat wil zeggen dat die variabelen geen teken bevatten. 
+> * Character types: Deze variabelen kunnen characters van het alfabet en tekens bevatten. Meestal worden characters (karakters) geconverteerd naar enen en nullen op basis van ASCII (zoek eens zo'n tabel op). Karakters zoals 'A' of '$' of '6'. De meest basis type voor dergelijke variabelen is 'char' en kan dus één enkel karakter bevatten. Bepaalde tekens hebben soms meer geheugenruimte nodig en dan volstaat 8 bit niet meer. Dan wordt een ander type gebruikt die bestaat uit meer bitlocaties in het geheugen. Character types zijn basisbouwstenen voor wat een string is (opeenvolging van char's). Op die manier kan leesbare tekst worden gebruikt binnen de software. Concatenatie is een soort bewerking met strings (aan elkaar plakken van twee afzonderlijke strings).  
+> * Numerische integer types: Deze variabelen kunnen getallen opslaan en verwerken. Getallen zoals 7 of 1024. Het kunnen enkel gehele getallen zijn , dus geen komma getallen. Ze kunnen in bepaalde omstandigheden een teken bevatten (positief of negatief). Maar bepaalde zijn 'unsigned' wat wil zeggen dat die variabelen geen teken bevatten.  
 > * Floating-point types: Deze variabelen zijn in de wiskunde gekend als reële getallen. Komma getallen dus zoals 3.1415 of 0.005. Er zijn hier ook verschillende typen te onderscheiden met hun eigen precisie en eigen limieten.
 > * Boolean types: Een Boolean , of kortweg bool, neemt maar 1 bit in het geheugen in en kan dus enkel 0 of 1 zijn. Soms spreekt men niet over 0 en 1, maar over False en True, wat hetzelfde is.
 
@@ -151,21 +151,21 @@ Sommige compilers verwerken bool-variabelen als een integer-variabele. Zo is dan
 
 Over de reserveringsruimte per type kunnen er wat verschillen zijn afhankelijk waarop de applicatie wordt ontwikkelt en uitgevoerd.
 
-Binnen iedere groep in bovenstaande tabel is tseeds de bovenste de variabele die het minst ruimte in het geheugen zal verbruiken. De onderste is steeds de grootste vebruiker van geheugenplaatsen. En de groepen die in de tabel bovenaan staan nemen de minste plaats in het geheugen. 
+Binnen iedere groep in bovenstaande tabel is tseeds de bovenste de variabele die het minst ruimte in het geheugen zal verbruiken. De onderste is steeds de grootste vebruiker van geheugenplaatsen. En de groepen die in de tabel bovenaan staan nemen de minste plaats in het geheugen.  
 
 ::: tip De fundamentele opslag unit in C++
 De meest fundamentele geheugenruimte waarop het geheugenmodel is gebaseerd van een computersysteem is de byte (8bits). Dit is groot genoeg om tekenloze getallen te bevatten tot 255. Het kan ook een karakter bevatten volgens ASCII of een karakter volgens Unicode UTF-8 encoding tabel. Binnen een reeks van meerdere bits (sequentie van bits) spreekt men altijd van LSB (Least significant bit) en MSB (Most significant bit) zodat er een zekere orde is binnen de verschillende bits in het geheel.
 :::
 
-Zoals eerder vermeld wordt de size (grootte = nodige geheugenruimte) uitgedrukt in bits bij een bepaalde type variabele. Uit hoe meer bits een variabele bestaat, hoe groter en complexer de variabele als data kan bewaren. Langs de andere kant zal een dergelijke variabele meer uimte oplsorpen binnen het geheugen van het computersysteem.  
+Zoals eerder vermeld wordt de size (grootte = nodige geheugenruimte) uitgedrukt in bits bij een bepaalde type variabele. Uit hoe meer bits een variabele bestaat, hoe groter en complexer de variabele (datatype) als data kan bewaren. Langs de andere kant zal een dergelijke variabele meer ruimte opslorpen binnen het geheugen van het computersysteem.  
 
 ![example image](./images/downloaden.png "An exemplary image")
 
 ### Declaratie van variabelen
 
-C++ is een strongly-typed language (taal), wat wil zeggen dat iedere variabele eerst moet kenbaar gemaakt worden aan de compiler voor die kan worden gebruikt. Dit noemt men declareren van een vraiabele. Hierbij zal de compiler een bepaalde geheugenruimte reserveren voor die variabele. Zo weet ook de compiler hoe de data van die variabele kan worden verwerkt. Kunnen er wiskundige bewerkingen mee gedaan worden (zoals met Integers)? De syntax, dit is de schrijfwijze binnen de programmeertaal van de instructies, om een variabele te declareren is eenvoudig te doen door het type te schrijven en daarna de naam van de variabele ( = identifier).
+C++ is een strongly-typed language (taal), wat wil zeggen dat iedere variabele eerst moet kenbaar gemaakt worden aan de compiler voor die kan worden gebruikt. Dit noemt men declareren van een variabele. Hierbij zal de compiler een bepaalde geheugenruimte reserveren voor die variabele. Zo weet ook de compiler hoe de data van die variabele kan worden verwerkt. Kunnen er wiskundige bewerkingen mee gedaan worden (zoals met Integers), of andere bewerkingen als het over een ander datatype gaat. De syntax, dit is de schrijfwijze binnen de programmeertaal van de instructies, om een variabele te declareren is eenvoudig te doen door het type te schrijven en daarna de naam van de variabele ( = identifier).
 
-Na declaratie bevat de variabele nog geen inhoud. Hiervoor is een toekenning nodig of een initialisatie. 
+Na declaratie bevat de variabele nog geen inhoud. Hiervoor is een toekenning nodig of een initialisatie.  
 
 ```cpp
 int radius;
@@ -173,7 +173,7 @@ int waarde = 30;
 char firstLetter = 'a';
 ```
 
-In bovenstaande code kan een declaratie gevolgd worden door een toekenning . Dan spreekt men van een Literal Value. Dit is niet noodzakelijk. 
+In bovenstaande code kan een declaratie gevolgd worden door een toekenning . Dan spreekt men van een Literal Value. Dit is niet noodzakelijk.  
 
 De naam van een variabele kan vrij worden gekozen met volgende regels. De naam moet beginnen met een letter of een underscore ('_'), niet met een cijfer of een getal. C++ is case sensitive, wat wil zeggen dat de namen hoofdletter gevoelig zijn.
 
@@ -188,7 +188,7 @@ firstLetter = 'b';
 
 ### Initialiseren van een variabele
 
-Het is dus niet nodig al onmiddelijk bij de declaratie een toekenning uit te voeren (initialiseren). Maar dan kan de variabele nog niet gebruikt worden om er een bewerking of iets anders mee te doen. 
+Het is dus niet nodig al onmiddelijk bij de declaratie een toekenning uit te voeren (initialiseren). Maar dan kan de variabele nog niet gebruikt worden om er een bewerking of iets anders mee te doen.  
 
 ```cpp
 int radius;
@@ -215,7 +215,7 @@ Wanneer een applicatie wordt gecompileerd, de preprocessor zal alle waarde waar 
 const int NUMBER_OF_TEACHRES = 85;
 ```
 
-Een const variabele declaratie declareert een eigenlijke waarde in het geheugen. Je kan er dus ook bewerkingen mee uit voeren. 
+Een const variabele declaratie declareert een eigenlijke waarde in het geheugen. Je kan er dus ook bewerkingen mee uit voeren.  
 
 Namen van constanten worden meestal volledig in hoofdletters geschreven met underscors als onderverdeling.
 
@@ -231,7 +231,7 @@ De meest basic operatoren zijn de wiskundige bewerkingen. Ze zijn eenvoudig te b
 | / | Gehele deling      |
 | % | Restdeling      |
 
-Deze bewerkingen zijn onderdeel van binaire bewerkingen en hebben dus twee operanden nodig met name een linkeroperand en een rechteroperand. 
+Deze bewerkingen zijn onderdeel van binaire bewerkingen en hebben dus twee operanden nodig met name een linkeroperand en een rechteroperand.  
 
 ```cpp
 int right = 14;
@@ -344,7 +344,7 @@ int b = i++;  // b = 5, i = 6
 
 ## Vergelijkings Operatoren (Comparison)
 
-Twee operanden kunnen met elkaar worden vergeleken en zal steeds een BOOL-type opleveren (dus waar of niet waar) (True or False). 
+Twee operanden kunnen met elkaar worden vergeleken en zal steeds een BOOL-type opleveren (dus waar of niet waar) (True or False).  
 
 Volgende vergelijkingsoperatoren zijn beschikbaar in C++
 
@@ -425,7 +425,7 @@ De laatste bewerking lijkt wel triviaal. De vergelijking wordt eerst uitgevoerd 
 
 ## If-statement
 
-Alle statements (bewerkingen) worden meestal van boven naar onder uitgevoerd. Voorwaarde statements kunnen hier verandering in brengen. Er kan hierdoor gesprongen worden naar andere statements. Of er kunnen bepaalde statements overgeslagen worden wanneer een voorwaarde False is. De flow van opeenvolgende statements kan dus gebroken worden door een voorwaarde-statement. 
+Alle statements (bewerkingen) worden meestal van boven naar onder uitgevoerd. Voorwaarde statements kunnen hier verandering in brengen. Er kan hierdoor gesprongen worden naar andere statements. Of er kunnen bepaalde statements overgeslagen worden wanneer een voorwaarde False is. De flow van opeenvolgende statements kan dus gebroken worden door een voorwaarde-statement.  
 
 Hier wordt de IF-voorwaarde besproken en met uitbreding de IF-ELSE. Het is een zeer fundamenteel statement binne programmeertalen. In volgend voorbeeld wordt nagegaan of een bepaalde variabele te groot is geworden. Indien de variabele groter of gelijk is aan 100 dan wordt die variabele terug op de 100 gezet. Er wordt dus een limiet geprogrammeerd voor die variabele. Dit doe je zo:
 
@@ -502,7 +502,7 @@ Er dient hier opgemerkt te worden dat het nesten van veel IF-staements behoorlij
 
 ## SWITCH-Statement
 
-Wanneer het zich voordoet dat er veel IF-statements moeten worden gebruikt, dan kan beter gebruik gemaakt wordt van een SWITCH-statement. Indien je een variabele wenst te controleren op verschillende mogelijkheden dan is het aan raden niet met verschillende IF-statements te werken maar met een SWICTH-CASE. Als voorbeeld nemen we hier een variabele die als getal de dag van de week voorstelt. 1 komt overen met maandag , 2 met dinsdag , 3 met ... . Dit zou kunnen gedaan worden met verschillende IF-statements. 
+Wanneer het zich voordoet dat er veel IF-statements moeten worden gebruikt, dan kan beter gebruik gemaakt wordt van een SWITCH-statement. Indien je een variabele wenst te controleren op verschillende mogelijkheden dan is het aan raden niet met verschillende IF-statements te werken maar met een SWICTH-CASE. Als voorbeeld nemen we hier een variabele die als getal de dag van de week voorstelt. 1 komt overen met maandag , 2 met dinsdag , 3 met ... . Dit zou kunnen gedaan worden met verschillende IF-statements.  
 
 ```cpp
 int dayOfTheWeek = 0;
@@ -619,9 +619,9 @@ Grafisch ziet er dit als volgt uit:
 
 ## WHILE-Loop
 
-Indien er niet geweten is hoeveel keer een lus moet worden herhaald, omdat er ergens op een status moet worden gewacht, dan wordt meestal gebruikt gemaakt van een WHILE-Loop. Er bestaan hiervan twee versies: WHILE-LOOP en DO-WHILE-LOOP. 
+Indien er niet geweten is hoeveel keer een lus moet worden herhaald, omdat er ergens op een status moet worden gewacht, dan wordt meestal gebruikt gemaakt van een WHILE-Loop. Er bestaan hiervan twee versies: WHILE-LOOP en DO-WHILE-LOOP.  
 
-Een WHILE-Loop ziet er als volgt uit 
+Een WHILE-Loop ziet er als volgt uit:  
 
 ![example image](./images/while-loop.jpg "An exemplary image")
 
@@ -670,11 +670,11 @@ Bij een DO-WHILE wordt de body sowieso 1 keer uitgevoerd en na het beëindigen v
 
 Een Function is een blok samenhorende statements die als geheel iets kunnen doen. Meestal worden statements die samen een bepaalde werking hebben en die meerdere keren in het programma wordt aangeroepen gegroepeerd en als aparte Functie opgeslagen in de software. Die blok kan dan vanuit verschillende plaatsen binnen de software worden aangeroepen. Na het beëindigen van een functie zal de compiler terugspringen naar het statement die volgt op het statement die de functie eerder heeft aangeroepen.
 
-Functions kunnen parameters bevatten. Hierdoor kan het aanroepen van een Function voorzien worden van enkele variabelen die dan binnen de Function kunnenn worden verwerkt. 
+Functions kunnen parameters bevatten. Hierdoor kan het aanroepen van een Function voorzien worden van enkele variabelen die dan binnen de Function kunnenn worden verwerkt.  
 
 Een Function kan ook een resultaat retourneren. Typisch is dat een Function de data van enkele paramerts verwerkt tot een resultaat en dit ook zal terug geven aan de aanroeper van de function.
 
-Een Function kan gezien worden als een blackbox waarin een aantal parameters kunnen worden ge-input en waar er soms ook een output is die een resultaat retourneert. 
+Een Function kan gezien worden als een blackbox waarin een aantal parameters kunnen worden ge-input en waar er soms ook een output is die een resultaat retourneert.  
 
 Het hergebruiken van function statements is een belangrijk onderdeel bij het programmeren. Beginners hebben het daar meesatl niet gemakkelijk mee.
 
@@ -693,7 +693,7 @@ De syntax in C++ voor een Function ziet er als volgt uit:
 }
 ```
 
-Dit is een Function definitie. Deze bestaat uit een header (met de naam en de parameters en het datatype die wordt teruggegeven) en een body (bevat alle samenhorende statements die en functionaliteit vormen). 
+Dit is een Function definitie. Deze bestaat uit een header (met de naam en de parameters en het datatype die wordt teruggegeven) en een body (bevat alle samenhorende statements die en functionaliteit vormen).  
 
 > Het Return type: Een function kan een datatype (soort variabele) retourneren. Er is niet noodzakelijk dat een Function iets retourneert. Dan wordt het woord VOID hier gebruikt.
 > De Function Naam: Dit is de naam van de Function. Deze wordt gebruikt om de function te beschrijven en wordt ook gebruikt om de Function aan te roepen.
@@ -787,9 +787,9 @@ else { led1 = false;} //Reset LED1
 
 Een array data structuur is een verzameling van meerdere variabelen van hetzelfde datatype die samenhoren. Zo kunnen bijvoorbeeld meerdere integer waarden een verzameling zijn van waarden die bijvoorbeeld de gemiddelde regenneerslag per dag bevatten. Bijvoorbeeld op maandag  3 l/m², op dinsdag 2, op woensdag 8, .... Er kan daar natuurlijk allemaal afzonderlijke variabelen voor gebruikt worden, maar beter is om al die waarden bij te houden in een verzameling (een array).
 
-In deze inleidende cursus beperkt zich de diepgang op array's zich tot ééndimensionele arrays. Er kunnen ook twee-dimensionele array's gebruikt worden of zelfs meer. Hier wordt niet dieper op ingegaan. 
+In deze inleidende cursus beperkt zich de diepgang op array's zich tot ééndimensionele arrays. Er kunnen ook twee-dimensionele array's gebruikt worden of zelfs meer. Hier wordt niet dieper op ingegaan.  
 
-Typisch aan array's is dat er een aantal elementen (afzonderlijke waarden) kunnen in bewaard worden. Al die afzonderlijke elementen worden gekenmerkt door een adres (index). Het eerste element zal zich op index-waarde 0 bevinden, hetvolgende op 1, enz. In het geheugen van het computersysteem zal een array starten op een bepaald adres (let op dit is niet de index) starten. Afhankelijk van het datatype per element zal het volgende element zich een beetje verder bevinden in het geheugen (wel aaneensluitend). Een computersysteeù geheugen is meestal Byte gestructureerd. Dus adressen verwijzen naar een plaats in het geheugen waar er een byte is opgeslagen. 
+Typisch aan array's is dat er een aantal elementen (afzonderlijke waarden) kunnen in bewaard worden. Al die afzonderlijke elementen worden gekenmerkt door een adres (index). Het eerste element zal zich op index-waarde 0 bevinden, hetvolgende op 1, enz. In het geheugen van het computersysteem zal een array starten op een bepaald adres (let op dit is niet de index) starten. Afhankelijk van het datatype per element zal het volgende element zich een beetje verder bevinden in het geheugen (wel aaneensluitend). Een computersysteeù geheugen is meestal Byte gestructureerd. Dus adressen verwijzen naar een plaats in het geheugen waar er een byte is opgeslagen.  
 
 Dus als een byte wordt gebruikt als datatype voor een array en het array start op adres vb: 2000, dan zal ieder volgend element zich op adres 2000 + i bevinden. i is hier de index van het zoveelste element in het array. Stel dat er 100 elementen in het array zitten dat start het array op het geheugenadres 2000 en loopt tot het geheugenadres 2099. 
 
@@ -797,7 +797,7 @@ Stel dat er er 16 bit als datatype wordt gebruikt, dan zijn er twee adressen in 
 
 ### Eéndimensionele Array
 
-Dit is dus een verzameling, container waarin een aantal elementen kunnen bewaard worden die van hetzelfde datatype zijn, en dit in één dimensie. Het aantal elementen die een array kan bevatten moet tijdens de declaratie worden vastgelegd. 
+Dit is dus een verzameling, container waarin een aantal elementen kunnen bewaard worden die van hetzelfde datatype zijn, en dit in één dimensie. Het aantal elementen die een array kan bevatten moet tijdens de declaratie worden vastgelegd.  
 
 Zo zal een één dimensionele array waarin 10 integer waarden kunnen worden in bewaard als volgt gedeclareerd worden:
 
@@ -832,7 +832,7 @@ int main()
 
 De functie spreekt voor zich. de variabele sum zal de som bevatten van alle 5 de ingegeven integer waarden.
 
-### Quick Initialization 
+### Quick Initialization  
 
 Net zoals een gewone variabele moet er na declaratie een toekenning gebeuren om iets in die variabele weg te schrijven. Zolang dit niet is gebeurd, is de inhoud van die variabele niet bepaald. Dit is ook zo bij een Array. Om er er zeker van te zijn dat alle elementen bij de start (na declaratie) bijvoorbeeld allemaal 0 hebben als inhoud , kan dit als volgt geprogrammeerd worden:
 
