@@ -301,7 +301,7 @@ Compilers zullen gelijkheidsoperatoren van rechts naar links uitvoeren. Bewerkin
 
 ### Verkorte bewerkingen (compound operators)
 
-Bewerkingen die heel veel in programmeertechieken worden gebruikt kennen sinds geruime tijd verkorte schrijfwijzen. het komt regelmatig voor dat een kleine bewerking moet gebeuren op een variabele en dat het resultaat terug moet worden bewaard in dezelfde variabele zoals 'a = a + 3' . Hierbij wordt de eerst het rechterlid uitgevoerd nl waarde a wordt gelezen, er wordt er 3 bij opgeteld, en het resultaat wordt terug op de geheugenplaats van a weggeschreven. De variabele a krijgt dus een update met deze bewerking. Dit wordt meestal korter geschreven in C++:
+Bewerkingen die heel veel in programmeertechieken worden gebruikt kennen sinds geruime tijd verkorte schrijfwijzen. Het komt regelmatig voor dat een kleine bewerking moet gebeuren op een variabele en dat het resultaat terug moet worden bewaard in dezelfde variabele zoals 'a = a + 3' . Hierbij wordt de eerst het rechterlid uitgevoerd nl. waarde a wordt gelezen, er wordt er 3 bij opgeteld, en het resultaat wordt terug op de geheugenplaats van a weggeschreven. De variabele a krijgt dus een update met deze bewerking en de inhoud wordt dus overschreven. Dit wordt meestal korter geschreven in C++:
 
 ```cpp
 int x = 5;
@@ -374,7 +374,7 @@ result = (a != b);    // a is not equal to b - true
 
 ```
 
-Een valkuil is de Gelijkheidsoperator. Daar worden twee == gebruikt. Hier wordt wel eens de fout gemaakt door er maar ééntje te plaatsen. Let op dit wordt dan een toekenning, wat dus niet hetzelfde is!!
+Een valkuil is de gelijkheidsoperator. Daar worden twee == gebruikt. Hier wordt wel eens de fout gemaakt door er maar ééntje te plaatsen. Let op dit wordt dan een toekenning, wat dus niet hetzelfde is!!
 
 Dergelijke operatoren worden zeer veel gebruikt binnen een programmeertaal.
 
