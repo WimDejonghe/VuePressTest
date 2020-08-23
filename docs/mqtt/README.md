@@ -39,6 +39,9 @@ Voor dergelijke toepassingen moeten een Socket geprogrammeerd worden. Een Socket
 
 ![example image](./images/mqtt2.png "An exemplary image")
 
+<p align="center">
+  <img   src="./images/mqtt2.png">
+</p>
 ---
 
 Stel je wilt het licht meten met een lichtsensor op een bepaalde plaats. Je wilt ook die gemeten lichtsterkte (waarschijnlijk een analoog getal??, bij een detector zou een digitaal getal volstaan) doorgeven aan een ander device (aangesloten op het internet, bedraad of mobiel). Dan kan je hiervoor het MQTT protocol gebruiken. Hierbij zal het device die het licht meet, ook moeten verbonden zijn aan het internet. Dit device kan zijn data (lichtsterkte) door sturen naar een server. De server wordt bij MQTT een Broker genoemd. De lichtsterkte wordt dus gepubliceerd op de Broker. Dit zal gebeuren in een specifieke `topic` op de broker
