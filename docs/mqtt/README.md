@@ -615,7 +615,7 @@ Dit willen we nu ook naar een `topic` sturen op de MQTT broker. Om structuur op 
 
 Herneem de stappen die we gezet hebben bij het aanmaken op de HiveMQbroker van de vorige `topic`, en test dit via de webpage van HiveMQ.
 
-![example image](./images/hivemq1.png "An exemplary image")
+![example image](./images/hivemq1a.png "An exemplary image")
 
 We zien dat we nu twee `topic`'s hebben. Eén voor de LED1 en één voor de UserButton. In beide kan data '0' of '1' staan. Merk op dat bij de UserButton er een '0' wordt weergegeven bij het indrukken.  
 
