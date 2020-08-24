@@ -351,7 +351,7 @@ Alle berichten die met QoS 1 en 2 worden verzonden, worden in de wachtrij geplaa
 
 We werken verder met hetzelfde programma op de Nucleo processor (zie Serial.pdf). Dit zag er zo uit:
 
-```c++
+```cpp
 //Nucleo_read_hyperterminal
 #include "mbed.h"
 
@@ -383,7 +383,7 @@ void ToonTekstTerminal(char waarde)
 
 We hebben eerder een applicatie en een dashboard gebouwd met Node-Red. We gaan hier nu een stap verder. We zullen nu de nodes binnen Node-Red ook gebruiken om een koppeling te maken met een MQTT broker. Je kan hiervoor de HiveMQ broker voor gebruiken. Je kan natuurlijk ook zelf een broker maken met evt een raspberry PI. Maar die moet steeds toegankelijk zijn voor subscribers en publishers. Omdat die twee wel eens op verschillende plaatsen op het internet hun verbinding maken is het dus best dat de broker op een fixed_IP adres geconnecteerd staat (kan desnoods ook bij Azure of Amazon).  
 
-![example image](hivemq.gif "An exemplary image")
+![example image](./images/hivemq.gif "An exemplary image")
 
 ---
 ## Configuratie Broker
@@ -486,23 +486,23 @@ Volgende settings dienen te gebeuren om connectie te kunnen maken met de HiveMQ 
 
 ![example image](./images/iotonoff1.png "An exemplary image")
 
-![example image]((./images/iotonoff2.png "An exemplary image")
+![example image](./images/iotonoff2.png "An exemplary image")
 
 Er wordt opnieuw gewerkt met een Switch control. Verwar dit niet met een switch-statement in C!!.
 
-![example image]((./images/iotonoff3.png "An exemplary image")
+![example image](./images/iotonoff3.png "An exemplary image")
 
 Door op Edit (rechtsboven) te klikken kan je de controls op deze dashboard wissen of editeren. Je kan natuurlijk nieuwe controls toevoegen. Door nu op het wieletje te drukken van de switch, kan je die control voorzien van parameters. De belangrijkste is hier publish. Hiermee stel je de topic in waarnaar de switch data zal versturen eenmaal die zal worden bediend.  
 
-![example image]((./images/iotonoff4.png "An exemplary image")
+![example image](./images/iotonoff4.png "An exemplary image")
 
-![example image]((./images/iotonoff6.png "An exemplary image")
+![example image](./images/iotonoff6.png "An exemplary image")
 
 Enkel de Publish is hier van belang. Let op: Hier moet je bij PUBLISH VALUES de juiste content invullen. In ons geval zal dat hier een 0 en een 1 zijn. In de figuur staat dit echter verkeerd. Je kan echter hier ook een Subscribe op de ze Control instellen. Wat zou hier de bedoeling van zijn? Kan je dit achterhalen?  
 
 Stel dat je met meerdere Publishers zou werken? Dan moet de switch op het dashboard van de NIET-bediener (NIET-publisher) ook aangepast worden op het moment dat een andere publisher de switch zou bedienen.
 
-![example image]((./images/iotonoff5.png "An exemplary image")
+![example image](./images/iotonoff5.png "An exemplary image")
 
 Let op : in de laatste afbeelding staat er als Topic : garden/sim/lights  , dit moet natuurlijk voor mijn applicatie `VIVES/IoT/WimD/LED1` zijn. Save and test.
 
@@ -522,7 +522,7 @@ Dit is echter iets moeilijker en er treden hier en daar enkele problemen op. We 
 
 We beginnen bij de microcontroller met de toestand van een button te lezen en die toestand door te sturen via de seriele COM-poort. We zouden kunnen starten met volgende code:
 
-```c++
+```cpp
 //UART_Send_Button
 #include "mbed.h"
 
@@ -668,7 +668,7 @@ We bespreken hier het gebruik van de tweede optie, het werken met een Ticker (zi
 
 Let's code op de processor (aan Node-Red en aan de Linear MQTT dashboard hoefen we niets te wijzigen).
 
-```c++
+```cpp
 //UART_Recv_SendINT
 #include "mbed.h"
 
