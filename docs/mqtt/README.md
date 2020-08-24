@@ -629,7 +629,7 @@ Het versturen van die data naar de topic doen we als volgt in Node-Red:
 
 Zorg ervoor dat je die node juist configureerd (broker + topic):
 
-![example image](./images/nr_mqttout.png "An exemplary image")
+![example image](./images/nr_mqtt_out.png "An exemplary image")
 
 In de topic komt dus de content van de data die de microcontroller verstuurt via Node-Red naar de MQTT broker.  
 
