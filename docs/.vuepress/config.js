@@ -5,8 +5,8 @@ module.exports = {
       nav: [
       ],
       sidebar: 
-        [ '/NodeRed/',  '/mbedcpp/', '/serial/', '/mqtt/', ],
-       
+        [ '/NodeRed/',  '/mbedcpp/', '/serial/',  '/spi/', '/mqtt/', ],
+        
 
             
               
