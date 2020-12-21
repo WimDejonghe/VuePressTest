@@ -194,7 +194,7 @@ Indien er data van de slave naar de master moet worden verzonden (bij een READ-c
 
 Bestudeer de datasheet van dit IC. [https://ww1.microchip.com/downloads/en/DeviceDoc/20002121C.pdf]  
 
-Volgende code zorgt ervoor dat er data kan gestuurd worden en kan gelezen worden. Bestudeer dit voorbeeld.
+Volgende code zorgt ervoor dat er data kan gestuurd worden en kan gelezen worden. Bestudeer dit voorbeeld waarbij er 2 dergelijke slaves worden gebruikt. Selectie van een slave wordt gerealiseerd door de CS (chip select) laag te brengen. Data en klok zijn dan voor deze slave bedoeld. Het is wel duidelijk dat maar één slave kan worden geselecteerd!!
 
 ```cpp
 /* mbed Microcontroller Library
@@ -284,4 +284,6 @@ int main()
 }
 ```
 
- 
+ Verder bestaan er nog veel andere soorten SPI slave die kunnen worden gebruikt. Een SPI slave kan natuurlijk ook een sensor bevatten of kan desnoods ook een actuator zijn, of beide.
+ Veel succes.
+  

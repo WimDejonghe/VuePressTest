@@ -481,7 +481,74 @@ Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als i
 
 ## Blue Tooth
 
-Hier moet nog de uitleg komen met een HC-06 Blue Tooth module.
+De Nucleo microcontroller bezit geen Blue-Tooth connectie mogelijkheid net zoals veel andere microcontrollers zoals een Arduino. Echter bestaat er een module die via een seriële connectie kan communiceren (bidirectioneel) naar een Blue-Tooth device (bv smartphone).  
 
+De module is een HC-05 of HC-06 module. Zoek dit even op op het internet.
+
+![example image](./images/hc06.jpg "BlueTooth module")
+
+Er valt op te merken dat de module een aantal pinnen bezit. Naast de verwachte VCC en GND (wat de voedingsspanning is) herkennen we een TX-pin en een RX-pin. Hierop kan een seriële verbinding worden aangesloten. Echter hebben we tot nu toe al altijd de virtuele seriële communicatie gebruikt die via de USB verbinding wordt gelegd met het andere device (meestal de computer of Rpi). We kunnen op de microcontroller ook een seriële verbinding leggen via twee hardware pinnen van de microcontroller. Zo kunnen we D8 en D2 als TX respectievelijk RX, gebruiken. Dan zal het dataverkeer natuurlijk niet via de USB kabel verlopen.
+
+Er bestaan echter een USB kabel die je op uw computer kan aansluiten die ook een virtuele COM-poort aanmaakt op uw computer en die aan de andere kant connecties bezit die een seriële communicatie kan verzorgen. Zie FTDI Chip, 3.3 V TTL Wire End USB to UART Cable - TTL-232R-3V3-WE .
+
+![example image](./images/ftdi.jpg "FTDI seriële kabel")
+
+![example image](./images/ftdi1.png "FTDI seriële kabel aansluiting")
+
+Op die manier zou je via een andere weg kunnen communiceren met de microcontroller en de computer (zoek wel de juiste COM-poort op uw computer na aansluiten FTDI kabel). Sluit tevens de pinnen van de FTDI kabel op de juiste TX en RX lijnen van de microcontroller!!
+
+![example image](./images/conn.png "RX-TX verbinding")
+
+Maar terug naar Blue Tooth. Zoek eens de herkomst op van de naam Blue Tooth??
+
+Een connectie met het blue tooth module en de Nucleo microcontroller ziet er als volgt uit:
+
+![example image](./images/nucleo_hc06.png "Nucleo verbinding met HC-06 Blue tooth module")
+
+Volgende code zou bruikbaar zijn, bestudeer deze :
+
+```cpp
+//UART
+#include "mbed.h"
+//STUDENTEN kunnen starten met :     https://os.mbed.com/handbook/Serial
+//------------------------------------
+// Hyperterminal configuration
+// 9600 bauds, 8-bit data, no parity
+//------------------------------------
+
+//Serial pc(SERIAL_TX, SERIAL_RX);
+                                        //Dit zou de string naar buiten sturen op USART2 (standaard). 
+                                        //Deze poort is normaal beschikbaar op de pinnen PA2/PA3 als de programmer NIET wordt gebruikt.
+                                        //Dus in gewone opstelling is de poort niet beschikbaar op PA2/PA3. 
+                                        //Natuurlijk kan de VIRTUELE COM poort hier wel gebruikt worden om mee te communiceren.
+                                        //Standaard instellingen : 9600,N,8,1
+                                        //Willen we echter wel serieel communiceren via pinnen, dan kan USART1 gebruikt worden. Beschikbaar op de pinnen PA9(D8) voor TX en PA10(D2)voor RX.
+                                        //Deze pinnen zijn tevens 5Volt Tolerant
+                                        //Dit doe je zo:
+Serial pc(D8, D2);
+DigitalOut led(LED1);
+
+int main()
+{
+    pc.baud(9600);                    //Hier wijzig je de baudrate
+    int i = 1;
+    pc.printf("Hello World !\r\n");
+    while(1) {
+        wait(0.5);
+        pc.printf("This program runs number of %d cycles.\r\n", i++);
+        char c = pc.getc(); // Read hyperterminal  : Groot nadeel hier: als er niets te lezen valt dan blijft programma hangen!!! Oplossing Serial Read Interrupt!!
+        if (c == '0') {
+           led = 0; // OFF
+        }
+        if (c == '1') {
+            led = 1; // ON
+        }
+    }
+}
+```
+
+Met de bluetooth mogelijkheden op een smartphone kan er nu gecommuniceerd worden met de processor. Er bestaan vele Apps (gratis) die je kan installeren die als Blue Tooth terminal functioneren. (Realterm op de smartphone dus). Een voorbeeld is op *Android Serial BlueTooth terminal*.  
+
+Test dit uit. Wat is de maximum haalbare communicatie afstand?  
 Veel succes,  
 Dhr. Dejonghe.  
