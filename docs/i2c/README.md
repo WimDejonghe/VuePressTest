@@ -16,11 +16,13 @@ title: [I2C communicatie]
 
 In dit deel van de cursus wordt de I²C communication protocol belicht. Waarom je dit zou gebruiken en hoe het te implementeren komt hier aan bod.
 
-De Inter-integrated Circuit I²C Protocol is een protocol die meerdere slave devices op de bus toelaten. In de meeste gevallen wordt er met één master gewerkt, alhoewel meerdere master van de bus kunnen gebruik maken. We zullen dit laatste in deze cursus achterwege laten. Er wordt dus hier gewerkt met één master en met meerdere slaves. Op dit vlak is het gelijkaardig aan de Serial Peripheral Interface (SPI). De bus wordt toegepast waar afstanden heel beperkt zijn, binnen een elektrisch toestel dus. Net zoals de Asynchronous Serial Interfaces (zoals des RS-232 of UARTs), werkt de bus maar met twee actieve lijnen die gebruikt wordt om data uit te wisselen tussen master en slave.
+![example image](./images/i2cbus.jpg "An exemplary image")
+
+De Inter-integrated Circuit I²C Protocol is een protocol die meerdere slave devices op de bus toelaten. In de meeste gevallen wordt er met één master gewerkt (invorige figuur is dit een RpI, maar in ons geval zal dit onze Nucleo microcontroller zijn), alhoewel meerdere master van de bus kunnen gebruik maken. We zullen dit laatste in deze cursus achterwege laten. Er wordt dus hier gewerkt met één master en met meerdere slaves. Op dit vlak is het gelijkaardig aan de Serial Peripheral Interface (SPI). De bus wordt toegepast waar afstanden heel beperkt zijn, binnen een elektrisch toestel dus. Net zoals de Asynchronous Serial Interfaces (zoals des RS-232 of UARTs), werkt de bus maar met twee actieve lijnen die gebruikt wordt om data uit te wisselen tussen master en slave.
 
 ## Waarom I²C?
 
-Om het gebruik te kunnen verantwoorden wordt $I^{2}C$ vergeleken met andere communicatie protocollen.
+Om het gebruik te kunnen verantwoorden wordt i²c vergeleken met andere communicatie protocollen.
 
 ![example image](./images/serial.png "An exemplary image")
 
@@ -34,7 +36,7 @@ Finaal kan er nog iets gezegd worden over de data-snelheid. Alhoewel er theoreti
 
 ## Wat is het nadeel van SPI?
 
-Het meest voor de hand liggende nadeel van SPI is het aantal benodigde pinnen. Het verbinden van een enkele master met een enkele slave met een SPI-bus vereist vier lijnen; elke extra slave vereist één extra chip-selectie I/O-pin op de master. De snelle proliferatie van pinverbindingen maakt deze ongewenst in situaties waarin veel apparaten aan \'e\'en master moeten worden gesleuteld. Ook kan het grote aantal verbindingen op een strakke pcb-layout voor problemen zorgen tijdens het routen van de print. SPI staat slechts \'e\'en master toe op de bus, maar het ondersteunt wel een willekeurig aantal slaves (alleen afhankelijk van de aandrijfmogelijkheid van de apparaten die op de bus zijn aangesloten en het aantal beschikbare chipselectiepinnen).
+Het meest voor de hand liggende nadeel van SPI is het aantal benodigde pinnen. Het verbinden van een enkele master met een enkele slave met een SPI-bus vereist vier lijnen; elke extra slave vereist één extra chip-selectie I/O-pin op de master. De snelle proliferatie van pinverbindingen maakt deze ongewenst in situaties waarin veel apparaten aan één master moeten worden gesleuteld. Ook kan het grote aantal verbindingen op een strakke pcb-layout voor problemen zorgen tijdens het routen van de print. SPI staat slechts één master toe op de bus, maar het ondersteunt wel een willekeurig aantal slaves (alleen afhankelijk van de aandrijfmogelijkheid van de apparaten die op de bus zijn aangesloten en het aantal beschikbare chipselectiepinnen).
 
 ![example image](./images/spiconn.png "An exemplary image")
 
@@ -120,7 +122,9 @@ Soms overschrijdt de datasnelheid van de master het vermogen van de slave om die
 
 In dit geval zullen sommige slave-apparaten een 'Clock Stretching' uitvoeren. Nominaal worden alle klokken aangedreven door de master. Een slave zal eenvoudig gegevens op de bus plaatsen of data uit de bus te nemen op ritme van de klokpulsen van de master. Op elk punt in het proces voor gegevensoverdracht kan een geadresseerde slave de SCL-regel laag houden nadat de master deze heeft vrijgegeven. De master moet zich onthouden van extra klokpulsen of gegevensoverdracht totdat de slave de SCL-lijn vrijgeeft.
 
-# Voorbeelden I²C in MBED voor Nucleo microcontroller
+# Voorbeeld I²C in MBED voor Nucleo microcontroller
+
+Hier gebruiken we een PCF8574. Dit is een 8bit I/O slave. Zoek datasheet op het internet en bestudeer dit.
 
 ![example image](./images/mbedpcf8574.jpg "An exemplary image")
 
