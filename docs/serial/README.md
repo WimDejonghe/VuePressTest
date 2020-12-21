@@ -65,11 +65,11 @@ De data-blok wordt ingekapseld in een frame. Ieder blok bestaat meestal uit een 
 
 ![example image](./images/frame.png "A serial frame. Sommige onderdelen zijn configureerbaar in aantal bits.")
 
+De eigenlijke informatie bij data die serieel wordt verzonden zit in de data-bits. Het aantal gebruikte bits hiervoor kan variëren tussen 5 bits en 9 bits. Meestal wordt een byte (8 bits) gebruikt die de data representateert, maar andere data-formaten kunnen dus voorkomen. Een 7-bit formaat komt ook regelmatig voor, zeker wanneer de data besdtaat uit tekst die gevormd zijn door de ASCII-tabel.
+
 ![example image](./images/frame2.png "Frame bij asynchrone transmissie.")
 
-De eigenlijke informatie bij data die serieel wordt verzonden zit in de data-bits. Het aantal gebruikte bits hiervoor kan vari\"eren tussen 5bits en 9 bits. Meestal wordt een byte (8 bits) gebruikt die de data representateert, maar andere data-formaten kunnen dus voorkomen. Een 7-bit formaat komt ook regelmatig voor, zeker wanneer de data besdtaat uit tekst die gevormd zijn door de ASCII-tabel.
-
-Na het vastleggen door beide devices van het aantal te gebruiken data-bits, kan er afgesproken worden hoe de data gerangschikt zal worden in het pakket. Wordt eerst de msb of komt de lsb eerst aan bod? Wordt data meest-significant verstuurd of omgekeerd? Als dit niet gespecifieerd staat, dan mag je ervan uitgaan dat de data wordt verstuurd volgens de laagst-significante bit (lsb) eerst.
+Na het vastleggen door beide devices van het aantal te gebruiken data-bits, kan er afgesproken worden hoe de data gerangschikt zal worden in het pakket. Wordt eerst de MSB of komt de LSB eerst aan bod? Wordt in de data eerste de meest-significant-bit (MSB) verstuurd of omgekeerd? Als dit niet gespecifieerd staat, dan mag je ervan uitgaan dat de data wordt verstuurd volgens de laagst-significante bit (LSB) eerst.
 
 ### Synchronisatie bits
 
@@ -91,7 +91,7 @@ Pariteit is optioneel, dit wil zeggen dat er ook kan gewerkt worden zonder parit
 
 Een device wenst de ASCII characters ‘O’ en ‘K’ te verzenden als data. De ASCII waarde van O (uppercase) is 79, in een 8 bits formaat omgezet ziet dit er alsvolgt uit 01001111, een K’s binaire waarde is 01001011. Er wordt volgens de instelling geen gebruik gemaakt van een PB, dus moeten enkel de start- en stopbits (synchronisatie bits) worden toegevoegd om twee frames te krijgen.
 
-In normale omstandigheden wordt de lsb eerst verstuurd binnen het frame van het datapakket. Op die manier wordt de data bij de zender uit een register geschoven en bij de ontvanger op die manier in een register ingeschoven. De totale bistroom is van dit voorbeeld terug te vinden in de figuur \ref{9600}. Let wel dat de twee frames exact na elkaar worden verzonden. Er kan gerust een tijdsgap zijn tussen de stopbit van het eerste frame en de startbit van het tweede frame.
+In normale omstandigheden wordt de lsb eerst verstuurd binnen het frame van het datapakket. Op die manier wordt de data bij de zender uit een register geschoven en bij de ontvanger op die manier in een register ingeschoven. De totale bistroom is van dit voorbeeld terug te vinden in volgende figuur. Let wel dat de twee frames exact na elkaar worden verzonden. Er kan gerust een tijdsgap zijn tussen de stopbit van het eerste frame en de startbit van het tweede frame.
 
 ![example image](./images/9600.png "Datastroom van 2 bytes bij asynchrone communicatie.")
 
@@ -99,7 +99,7 @@ Doordat de baud rate is ingesteld op 9600 bps, is de bittijd (die iedere bit inn
 
 Voor iedere verzonden byte (8bit data) zijn er dus 10 bits nodig: een start bit, 8 data bits, en een stop bit. Zo, bij 9600 bps, worden er 960 (9600/10) bytes per seconde verzonden.
 
-Nu is er genoeg kennis hoe paketten bij een serieel protocol worden samngesteld. Nu kan de hardware eens bekeken worden. Hoe ziet met andere woorden de bedrading eruit tussen twee devices. Daar wordt besproken hoe eenen en nullen en de baud rate ge\"implementeerd worden in signaal levels!
+Nu is er genoeg kennis hoe paketten bij een serieel protocol worden samngesteld. Nu kan de hardware eens bekeken worden. Hoe ziet met andere woorden de bedrading eruit tussen twee devices. Daar wordt besproken hoe eenen en nullen en de baud rate geïmplementeerd worden in signaal levels!
 
 ## Bedrading en hardware
 
@@ -127,13 +127,13 @@ RS-232, die kan gevonden worden op een SUBD9 connector op computers en randappar
 
 Bij een embedded systeem wordt meestal de TTL standdard gebruikt. Beperktheid hiervan zit er vooral in dat er geen grote afstanden kunnen worden overbrugd. Bij grotere afstanden treden snel datafouten op. Doordat de spanningsniveaus bij RS-232 verder uit elkaare liggen, kan er hiermee een grotere afstand worden overbrugd. (15 meter met gewone draden). Een standaard als RS-485 is geschikt om nog grotere afstanden te overbruggen.
 
-Wanneer er twee devices serieel met elkaar worden verbonden is het zeer belangrijk dat de spanningsniveaus met elkaar overeenstemmen (matchen). Het is strikt verboden om te interfacen tussen verschillende spanningsniveaus. Schade zal zeker het gevolg zijn van de devices!! Dus een connectie tussen een TTL en een RS-232 is uit ten boze. Een oplossing is om de spanningsniveaus aan te passen, maar ook het signaal te inverteren.
+Wanneer er twee devices serieel met elkaar worden verbonden is het zeer belangrijk dat de spanningsniveaus met elkaar overeenstemmen (matchen). Het is strikt verboden om te interfacen tussen verschillende spanningsniveaus. Schade zal zeker het gevolg zijn van de devices!! Dus een connectie tussen een TTL en een RS-232 is uit ten boze. Een oplossing is om de spanningsniveaus aan te passen, maar ook het signaal te inverteren. Hier kan soms een kleine uitzondering worden gemaakt als er communicatie is tussen devices op 5V en 3V3. Hier dient het 5V tolerant zijn te worden nagegaan op het 3V3 device, wat bij een Nucleo soms zo is (controle datasheet!!).
 
 Als vervolg onderzoeken we de tool die microcontrollers gebruiken om hun  data te converteren van een parallelle bus naar een seriële bitstroom. Hierbij wordt gebruik gemaakt van een UART!
 
 ## UART
 
-Het laatste stukje van de seriële puzzel is het onderdeel die verantwoordelijk is voor de seri\"ele bitstroom bij microcontrollers. Dankzij de nodige interne registers verzorgt de UART de correcte seri\"ele interface.
+Het laatste stukje van de seriële puzzel is het onderdeel die verantwoordelijk is voor de seriële bitstroom bij microcontrollers. Dankzij de nodige interne registers verzorgt de UART de correcte seriële interface.
 
 Een universal asynchronous receiver/transmitter (UART) is een interne block van het circuitry die verantwoordelijk is voor de implementatie van de seriële communicatie. In essentie, de UART doet zich voor als een tussenschakel tussen parallelle werking van de processor en de seriële interface. De UART bezit dus enerzijds een bus structuur (bv. 8 bit) met de nodige controlelijnen en aan de andere kant zijn twee pinnen, - RX en TX, beschikbaar die de seriële interface vormen.
 
@@ -175,7 +175,7 @@ Als bijvoorbeeld twee transmitters met elkaar zijn verbonden (beide TX lijnen li
 
 Twee devices die proberen data te verzenden op eenzelfde lijn is altijd slecht!! Hardwarematig kan dit de beide zenders beschadigen.  
 
-Wat wel kan, is naar twee ontvangers data sturen vanuit een enkelvoudige zender. Alhoewel dit geen normale opstelling is. Er kan niet geselecteerd worden naar welk device de data zal worden gestuurd. Een seri\"ele communicatie is bedoeld tussen twee devices. 
+Wat wel kan, is naar twee ontvangers data sturen vanuit een enkelvoudige zender. Alhoewel dit geen normale opstelling is. Er kan niet geselecteerd worden naar welk device de data zal worden gestuurd. Een seri\"ele communicatie is bedoeld tussen twee devices.  
 
 ![example image](./images/recvd2.png "Asynchrone transmissie met een zender en twee ontvangers?.")
 
