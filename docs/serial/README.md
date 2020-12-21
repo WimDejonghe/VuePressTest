@@ -478,5 +478,10 @@ Deze code is niet 100% waterdicht. Twee problemen doen zich voor bij die code:
 Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als inzicht in de werking kunnen we de bovenstaande beperkingen accepteren.
 
 ---
+
+## Blue Tooth
+
+Hier moet nog de uitleg komen met een HC-06 Blue Tooth module.
+
 Veel succes,  
 Dhr. Dejonghe.  

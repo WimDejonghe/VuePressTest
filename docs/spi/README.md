@@ -98,5 +98,190 @@ Er dient nog opgemerkt te worden dat er respect moet zijn op vlak van de spannin
 
 ## Aansturen van een LEDstrip
 
-## Aansturen van een IO expander (Write and Read!!)
+Bestudeer de datasheet van deze LEDstrip : [https://cdn-shop.adafruit.com/datasheets/APA102.pdf]  
 
+![example image](./images/timing.png "Timing van de super LED.")
+
+![example image](./images/timing.jpg "Timing van de super LED.")
+
+![example image](./images/superled1.png "Super LED.")
+
+![example image](./images/superled2.png "Daisy chain van verschillende super LEDS.")
+
+```cpp
+//MBED_Course7_1_leds
+/* mbed Microcontroller Library
+ * Copyright (c) 2019 ARM Limited
+ * SPDX-License-Identifier: Apache-2.0
+ */
+//SPI slave Ledstrip APA102
+//https://cdn-shop.adafruit.com/datasheets/APA102.pdf 
+#include "mbed.h"
+#include "platform/mbed_thread.h"
+// Blinking rate in milliseconds
+#define BLINKING_RATE_MS                                                    100
+// Initialise the digital pins
+Serial pc(SERIAL_TX, SERIAL_RX); 
+SPI spi1(D11,D12,D13);        //MOSI/MISO/SCK/CS  ... CS gebruiken we hier niet. Ook de Input data (MISO) wordt hardwarematig niet geconnecteerd
+//Declaratie (klasse)variabelen
+char teller = 0;
+int main()
+{
+    pc.printf("0\r\n");
+    
+    spi1.format(8,3);
+    spi1.frequency(512000);     //512kHz
+ 
+    //stoppen
+    spi1.write(0x00);
+    spi1.write(0x00);
+    spi1.write(0x00);
+    spi1.write(0x00);
+    
+    thread_sleep_for(BLINKING_RATE_MS);
+    
+    while (true) {
+        
+        pc.printf("teller = %d \r\n", teller);
+        //eerste LED
+        spi1.write(0xff); 
+        spi1.write(255-teller);     //Blue
+        spi1.write(teller);         //Green
+        spi1.write(0x00);           //Red
+        //tweede LED
+        spi1.write(0xff);           //3 bits MSB '1' + 5 bits helderheid (brightness) voor de drie kleuren
+        spi1.write(255-teller);     //Blue
+        spi1.write(0x00);           //Green
+        spi1.write(teller);         //Red
+        
+        spi1.write(0xff); 
+        spi1.write(0x00);
+        spi1.write(255-teller);
+        spi1.write(teller);
+        
+        spi1.write(0xff); 
+        spi1.write(teller);
+        spi1.write(255-teller);
+        spi1.write(0x00); 
+        
+        spi1.write(0xff); 
+        spi1.write(teller);
+        spi1.write(0x00);
+        spi1.write(255-teller); 
+        
+            //stoppen
+        spi1.write(0x00);
+        spi1.write(0x00);
+        spi1.write(0x00);
+        spi1.write(0x00);   
+ 
+        thread_sleep_for(BLINKING_RATE_MS);
+        teller++;
+    }
+}
+
+```
+
+Maak zelf een mooie sequentie van LEDs.  Als extra opdracht, stuur vanuit een App de afzonderlijke LEDs.
+
+## Aansturen van een IO expander (Write / Read!!)
+
+We zullen hier een IO-expander aansturen. Dit is een SPI slave module (IC : MCP23S09) met 8 I/O pinnen. De µC wordt ook hier als SPI-master gebruikt (enkel SPI-master kan een clock signaal genereren). Een I/O pin kan als input of als output worden gedefinieerd.
+
+Data van master naar slave wordt doorgeklokt op ritme van de SPI-klok (WRITE cyclus).  
+
+Indien er data van de slave naar de master moet worden verzonden (bij een READ-cyclus) zal de slave zijn data op het kloksignaal moeten synchroniseren die de master opzettelijk moet generenen!!
+
+Bestudeer de datasheet van dit IC. [https://ww1.microchip.com/downloads/en/DeviceDoc/20002121C.pdf]  
+
+Volgende code zorgt ervoor dat er data kan gestuurd worden en kan gelezen worden. Bestudeer dit voorbeeld.
+
+```cpp
+/* mbed Microcontroller Library
+ * Copyright (c) 2019 ARM Limited
+ * SPDX-License-Identifier: Apache-2.0
+ */
+//Dit is een opdracht met de IOexpander van Dirk Bulcaen
+//SPI slave IC zijn MCP23S09
+#include "mbed.h"
+#include "platform/mbed_thread.h"
+
+
+// Blinking rate in milliseconds
+#define BLINKING_RATE_MS                                                    100
+
+// Initialise the digital pins
+Serial pc(SERIAL_TX, SERIAL_RX); 
+SPI spi1(D11,D12,D13);        //MSI/MISO/SCK/(CS)
+
+DigitalOut cs2(D8);         //Chipselect van MCP23S09 als byte output , dus met LEDS
+DigitalOut cs1(D2);         //Chipselect van MCP23S09 als byte input , dus met switchen     
+//DigitalOut led(LED1);
+char teller = 0;
+char lezen;
+
+int main()
+{
+    cs2=1;                          //chipselect deactiveren
+    cs1=1;                          //chipselect deactiveren
+    spi1.format(8,3);               //standaard mode3 , heeft te maken met polariteit van data en klok en op welke flank er wordt gewerkt van de klok
+    spi1.frequency(5000000);
+
+    
+    cs1=0;                           //chipselect van 1° IC (met SWITCHEN)
+    spi1.write(0x40);                //Selecteer het adres van de chip (zie datasheet, ligt vast)
+    spi1.write(0x00);                //Selecteer adres van IO register  
+    spi1.write(0xff);                //om aan te geven dat GPIO pinnen inputs zijn (8switchen)
+    cs1=1;                          //chipselect deactiveren
+    thread_sleep_for(BLINKING_RATE_MS); //beetje wachten, spike vermijden
+    cs1=0;                          //chipselect van 1° IC (met SWITCHEN)
+    spi1.write(0x40);               //Selecteer het adres van de chip (zie datasheet, ligt vast)
+    spi1.write(0x06);                //Selecteer adres van PULLUP register  
+    spi1.write(0xff);               //om aan te geven dat alle GPIO pinnen pullups moeten bevatten (er staan er geen op de print)
+    cs1=1;                          //chipselect deactiveren
+    
+    cs2=0;                          //chipselect van 2° IC (met LEDS)
+    spi1.write(0x40);                //Selecteer het adres van de chip (zie datasheet, ligt vast)
+    spi1.write(0x00);                //Selecteer adres van IO register  
+    spi1.write(0x00);                //om aan te geven dat GPIO pinnen outputs zijn (8LEDS)
+    cs2=1; 
+    
+    cs2=0;                          //chipselect activate 2°IC met LEDS
+    spi1.write(0x40);                //Selecteer het adres van de chip (zie datasheet, ligt vast) R/W (LSB) = '0'
+    spi1.write(0x09);                //Selecteer adres van GPIO register
+    spi1.write(0xaa);                //data voor GPIO outputs
+    cs2=1;                          //chipselect deactiveren
+    
+    thread_sleep_for(BLINKING_RATE_MS);
+    thread_sleep_for(BLINKING_RATE_MS);
+    thread_sleep_for(BLINKING_RATE_MS);
+    thread_sleep_for(BLINKING_RATE_MS);
+    thread_sleep_for(BLINKING_RATE_MS);
+    
+    while (true) {
+        //led = !led;
+        cs1=0;                      //chipselect activeren
+        spi1.write(0x41);           //Selecteer het adres van de chip (zie datasheet, ligt vast) R/W (LSB) = '1'
+        spi1.write(0x09);           //Selecteer adres van GPIO register
+        lezen = spi1.write(0xff);   //maakt dus hier niet uit wat er wordt gezonden van data om 09 binnen te lezen
+                                    //vorige regel: Slave kan geen klokpulsen genereren om data terug te sturen naar de master
+                                    //vorige regel: Master moet die klokpulsen genereren. Dit doen we door nieuwe (willekeurige) data te sturen naar de slave.
+                                    //vorige regel: Verzonden data is dus onbelangrijk enkel nood aan klokpulsen waarop slave data zal enten. Zo leest master de data
+        lezen = 255 - lezen;
+        cs1=1;                      //chipselect deactiveren
+               
+        pc.printf("De gelezen waarde is gelijk aan : %u \r\n", lezen); 
+         
+        cs2=0;                      //chipselect activeren
+        spi1.write(0x40);           //Selecteer het adres van de chip (zie datasheet, ligt vast) R/W (LSB) = '0'
+        spi1.write(0x09);           //Selecteer adres van GPIO register
+        spi1.write(teller);
+        teller--;
+        cs2=1;                      //chipselect activeren
+        thread_sleep_for(BLINKING_RATE_MS);
+     
+    }
+}
+```
+
+ 
