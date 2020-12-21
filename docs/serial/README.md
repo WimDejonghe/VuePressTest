@@ -3,12 +3,181 @@ author: [Wim Dejonghe]
 description: [Opbouw OOP lessen IoT.]
 ms.date: [CREATION/UPDATE DATE - mm/dd/yyyy]
 marp: true
-title: [Seriele communicatie]
+title: [Seriële communicatie]
 ---
 
-# Seriele communicatie  
+# Seriële communicatie  
 
 ![example image](./images/rs232_bits.png "An exemplary image")
+
+---
+
+## Introductie
+
+Embedded electronics gaat omtrent het interconnecteren van elektronische schakelingen en circuits (processoren en andere integrated circuits (IC)) om tot een werkend systeem te komen. Opdat deze individuele circuits informatie kunnen uitwisselen, is er een gemmenschappelijk protocol nodig tussen die bouwstenen. Dit wordt een communicatie protocol genoemd, en zo zijn er heel veel. Honderden van deze protocollen zijn heel duidelijk beschreven en uitgewerkt. Als een studie zich opdringt dan kan het verzamelen van verschillende protocollen in groepen hier duidelijkheid in brengen. Zo kunnen alle protocollen onderdverdeeld worden in seriële communicatie of parallelle communicatie.
+
+## Parallel versus Serial
+
+Parallelle interfaces transferen meerdere bits op hetzelfde ogenblik. Ze maken meestal gebruik van meerdere datalijnen, die soms een bus wordt genoemd. Zo kan een bus bijvoorbeeld 8 bits ophetzelfde ogenblik vertransporteren door gebruik te maken van 8 datalijnen. Bij moderene computers worden er soms bussen gebruikt met 64 datalijnen. Data zal getransfereerd worden met een hoge dichtheid aan eenen en nullen.
+
+![example image](./images/parallel.png "An exemplary image")
+
+Seriële interfaces laten hun data bit-na-bit stromen doorheen 1 verbindingslijn. Er wordt dus maar 1 bit terzelfdertijd verstuurd. Deze interfaces kunnen dus functioneren over 1 draad, meestal zijn er enkele meer (max 4).
+
+![example image](./images/serial.png "An exemplary image")
+
+Als een datastroom zou vergeleken worden met een stroom van wagens, dan zou een 8-bit brede parallele communicatie een 8 vakken brede autosnelweg zijn. Terwijl een seriële communicatie dan een gewone rijweg (1 vak) is.  Binnen een bepaalde tijdspanne kan er gesteld worden dat de snelweg dus 8 keer meer wagens kan verplaatsen, dan de gewone rijweg. Dus parallel communicatie is sneller dan seriële, maar een 8 vakken brede autosnelweg kost in opbouw veel meer dan een gewone rijweg. Dit is in de digitale wereld dus ook zo.
+
+Parallelle communicatie bezit dus een aantal voordelen. Het is snel, rechtdoor, en relatief eenvoudig te implementeren. Maar er is nood aan een heleboel bedrading die zorgen voor meerdere input/output (I/O) lijnen. Dit is sterk afhankelijk van het type processor waar je mee werkt. Er kan zich een probleem voordoen wanneer een bij een bepaalde toepassing van processor wordt gewijzigd. Om die reden wordt er meestal in interfacing gewerkt met seriële interfaces. De snelheid van vele serieële interfaces is gedurende verdere ontwikkeling steeds toegenomen.  
+
+## Serieel Asynchroon
+
+Gedurende de computerevolutie zijn er tientallen seriële protocollen ontwikkeld geweest die werden geïmplementeerd bij embedded systemen. USB (universal serial bus), en Ethernet, zijn een set aan seriële protocollen die heel gekend zijn, op iedere moderne computer aanwezig, en wijdverspreid gestandaardiseerd zijn. Andere veel gebruikte standaarden bij embedded systemen zijn SPI, I2C, (USB) en de serial standard die we zullen bespreken in dit deeltje van de cursus. De groep van alle seriële interfaces kan op zijn beurt worden opgesplitst in twee gsubgroepen: Synchrone en asynchrone.
+
+Een synchrone seriële interface maakt steeds gebruik van een combinatie van een klok-signaal (klok-lijn) en een data-signaal (data-lijn). Zo zullen alle devices die zijn aangesloten op een seriële interface gebruik maken van dezelfde klok-lijn. Op die manier wordt de opbuw van de hardware envoudig, maar er is nood aan een extra bedrading die deze klok voorziet tussen de communicerende devices. SPI, en I2C behoren tot deze groep en zijn dus synchrone seriële interfaces.
+
+Asynchroon, betekent dat de data wordt verstuurd zonder dat een klok wordt meegestuurd. Deze transmissie is dus perfect wanneer het aantal draden en I/O pinnen moet worden gereduceerd of beperkt zijn. Maar zo eenvoudig mag het niet gesteld worden, dit kan niet zomaar. Er zullen inspanningen moeten worden gedaan om de data leesbaar van zender naar ontvanger te sturen. De ontvanger zal moeten weten wanneer een volgende bit zich zal aanbieden, en wanneer een vorige bit is beëindigd. Net zoals in een tekst de woorden van elkaar worden gescheiden door een spatie, om aan te geven dat er een nieuw woord begint. Er zal dus een manier moeten worden bedacht die tussen zender en ontvanger dit duidelijk maakt. Asynchrone communicatie is de allereerste standaard die reeds bij de eerste computer uit 1980 van toepassing was. Hierdoor wordt meestal naar verwezen als men in het algemaan spreekt over seriële communicatie.
+
+Een clock-less serieel protocol die we hier bespreken is nog steeds heel courant in toepassingen en meestal bevat een microprocessor of een embedded systeem de nodige pinnen die deze functie verzorgen, dus een Rx en een Tx pin. Ook inwendig bezit een processor of controller de nodige registers die softwarematig kunnen worden ingesteld voor bepaalde eigenschappen van die poort. Via deze interface kunnen oa volgende modules worden aangesproken vanuit een bepaald systeem: GPS module, Bluetooth, XBee’s, serial LCDs, en vele andere externe devices van uw project.
+
+## Rules of Serial
+
+Het asynchrone serieel protocol heeft een aantal built-in rules - mechanismen die de robuustheid van het transport verzorgen om tot een error-free data transfer te komen. Deze mechanismen, die we krijgen om het externe kloksignaal te voorkomen, zijn:
+
+* Data bits,
+* Synchronization bits,
+* Parity bits,
+* en Baudrate.
+
+Door de brede variëteit van signaal mechanismen, zijn er vele manieren om de data serieel te versturen. Er is niet één juiste manier, maar vele. Het protocol bezit een hoge graad van configureerbaarheid en bezit dus instellingen of parameters bij de items die hierboven zijn opgesomd. Het meest kritieke aan dit protocol is dat beide kanten (zender en ontvanger) dezelfde instellingen moeten bezitten opdat de transfer error-free kan gewaarborgd worden.
+
+### Baudrate
+
+De baud rate specifieert de snelheid van iedere te verzenden bit, of hoe snel worden e bits na elmkaar verzonden, of wat is de tijdsduur van 1 bit die op de data-lijn komt te staan. Baud rate, of kortweg baud, wordt meestal uitgedrukt in eenheden van bits-per-second (bps). Als je de baud rate inverteert, dan bekom je de tijd die nodig is om 1 bit te versturen. Gedurende deze tijd zal de zender de data-lijn hoog of laag (afhankelijk van de waarde van de te verzenden bit) houden. Het is dus duidelijk dat de ontvanger deze bit het best binnenhaalt (lezen) in het mideen, dus halverwege de bittijd. Daar zal de bitwaarde het meest constant zijn. We spreken dan dat de ontavnger de waarde sampled, of bemonstert.
+
+Baud rates kan van waarde worden gewijzigd volgen enkele standaarden. Enige voorwaarde hierbij is dat de beide devices op dezelfde baud rate ingesteld staan. Een gebruikelijke waarde waarbij snelheid niet van groot belang is, is 9600 bps. Andere standard baud zijn 1200, 2400, 4800, 19200, 38400, 57600, en 115200.
+
+Hoe hoger de baud rate, hoe sneller de data wordt verzonden/ontvangen, maar er zijn limieten aan deze snelheid. Deze worden meestal bepaald door de enerzijds de gebruikte devices, maar anderzijds ook door de bandbreedte van het gebruikte medium. Ook de afstand tussen de devices zal een rol spelen. Bij bedrade verbinding, wordt de afstand beperkt tot 5 meter. Meestal kan de snelheid ingesteld worden tot een waarde van  115200 - wat snel is bij de meeste microcontrollers. Bij een te hoge waarde kunnen er transmissiefouten optreden (bits worden niet correct gelezen). Dit is dus niet meer error-free en er gaat informatie verloren.
+
+### Framing the data
+
+De data-blok wordt ingekapseld in een frame. Ieder blok bestaat meestal uit een byte met de data. Deze blok wordt ingekapseld met extra bits. Dit wordt een frame genoemd. Die extra bits hebben twee functies. De eerste functie verzorgd de synchronisatie tussen de communicerende devices en de tweede functie is de controle op de juistheid van de data. Deze tweede functie wordt gerealiseerd dmv pariteitbit.
+
+![example image](./images/frame.png "A serial frame. Sommige onderdelen zijn configureerbaar in aantal bits.")
+
+![example image](./images/frame2.png "Frame bij asynchrone transmissie.")
+
+De eigenlijke informatie bij data die serieel wordt verzonden zit in de data-bits. Het aantal gebruikte bits hiervoor kan vari\"eren tussen 5bits en 9 bits. Meestal wordt een byte (8 bits) gebruikt die de data representateert, maar andere data-formaten kunnen dus voorkomen. Een 7-bit formaat komt ook regelmatig voor, zeker wanneer de data besdtaat uit tekst die gevormd zijn door de ASCII-tabel.
+
+Na het vastleggen door beide devices van het aantal te gebruiken data-bits, kan er afgesproken worden hoe de data gerangschikt zal worden in het pakket. Wordt eerst de msb of komt de lsb eerst aan bod? Wordt data meest-significant verstuurd of omgekeerd? Als dit niet gespecifieerd staat, dan mag je ervan uitgaan dat de data wordt verstuurd volgens de laagst-significante bit (lsb) eerst.
+
+### Synchronisatie bits
+
+Meestal worden hier twee tot drie bits voor gebruikt. Deze bits hebben geen content-waarde en zijn enkel bedoeld om de ontvanger er attent op te maken dat de bit-stroom zal beginnen / wordt afgesloten. Respectievelijk spreekt men over een start-bit bij de aanvang van de bitstroom, en over stop-bits die de datastroom afsluiten. De start-bit is steeds 1 bit die de data-lijn van een IDLE-toestand naar de startconditie brengt. Het aantal stopbits kan variëren van 1 tot 2. Deze brengt de data-lijn na het be\"eindigen terug in een IDLE-toestand. Het aantal gebruikte stop-bits zal dus als parameter in beide devices moeten overeenstemmen. Bij voorkeur wordt het aantal stopbits op 1 ingesteld.
+
+De start bit is altijd aanwezig en brengt de data-lijn van ee IDLE-toestand (logisch 1) naar 0. Een stop-bit is steeds logisch 1 signaal, dit is overigens ook de IDLE-toestand van de data-lijn.
+
+Een logische 0 wordt een space genoemd en een logische 1 wordt een mark genoemd.
+
+### Parity bit
+
+Pariteit is een heel eenvoudige vorm, low-level, om aan error-controle te doen door de ontvanger. Er bestaan twee vormen van pariteit: even of oneven pariteit. De pariteit bestaat uit 1 bit die toegevoegd kan worden aan het data-pakket binnen een frame. De bit neemt evenveel tijd in zoals een andere bit. Dit bit wordt door de zender geset of gereset. Bij een even-pariteit wordt de bit zodanig ingesteld zodat het totale bit-pakket (data + pariteitbit) even aantal eenen bevat. Dezelfde redenering wordt gemaakt bij een oneven pariteit. De ontvanger kan hierdoor beperkte bitfouten detecteren. Als voorbeeld willen we hier in een even-pariteit werken. Veronderstel dat we over volgend datapakket (1 byte) beschikken: 0b01011101. Er moet dus een negende bit aan het pakket worden toegevoegd, de pariteit-bit. We tellen in de data-byte 5 eenen. Dit is dus oneven. Doordat we met een even-pariteit werken moet databyte + PB een even aantal eenen bevatten. Dus wordt hier de PB op 1 geplaatst. Dezelfde redenering kan gemaakt worden bij het gebruik van oneven pariteit.
+
+Pariteit is optioneel, dit wil zeggen dat er ook kan gewerkt worden zonder pariteit. Het werken met pariteit en afspraken welke pariteit moet door beide devices geresepecteerd en ingesteld worden. Het gebruik van een pariteit kan nuttig zijn bij het detecteren van fouten binnen een data-verbinding. Het nadeel bij het gebruik ervan is wel dat er volledige bittijd nodig is om een beperkte controle te hebben. Er worden tenslotte maar 8 bits aan data verstuurd. Het vertraagd dus de gemiddelde datasnelheid. Wat doet de ontvanger bij foutdetectie? Het pakket zal worden genegeerd en, als het protocol het toestaat, zou het pakket opnieuw kunnen worden aangevraagd (re-sent).
+
+### Een voorbeeld parameters : 9600/N/8/1
+
+9600 8N1 - 9600 baud, 8 data bits, no parity, and 1 stop bit - is een instelling die regelmatig voorkomt. Hoe ziet er zo een bit-stroom uit wanneer 2 bytes worden verzonden. Een voorbeeld!
+
+Een device wenst de ASCII characters ‘O’ en ‘K’ te verzenden als data. De ASCII waarde van O (uppercase) is 79, in een 8 bits formaat omgezet ziet dit er alsvolgt uit 01001111, een K’s binaire waarde is 01001011. Er wordt volgens de instelling geen gebruik gemaakt van een PB, dus moeten enkel de start- en stopbits (synchronisatie bits) worden toegevoegd om twee frames te krijgen.
+
+In normale omstandigheden wordt de lsb eerst verstuurd binnen het frame van het datapakket. Op die manier wordt de data bij de zender uit een register geschoven en bij de ontvanger op die manier in een register ingeschoven. De totale bistroom is van dit voorbeeld terug te vinden in de figuur \ref{9600}. Let wel dat de twee frames exact na elkaar worden verzonden. Er kan gerust een tijdsgap zijn tussen de stopbit van het eerste frame en de startbit van het tweede frame.
+
+![example image](./images/9600.png "Datastroom van 2 bytes bij asynchrone communicatie.")
+
+Doordat de baud rate is ingesteld op 9600 bps, is de bittijd (die iedere bit inneemt op de datalijn) gelijk aan 1/(9600 bps) of 104 microseconden per bit.
+
+Voor iedere verzonden byte (8bit data) zijn er dus 10 bits nodig: een start bit, 8 data bits, en een stop bit. Zo, bij 9600 bps, worden er 960 (9600/10) bytes per seconde verzonden.
+
+Nu is er genoeg kennis hoe paketten bij een serieel protocol worden samngesteld. Nu kan de hardware eens bekeken worden. Hoe ziet met andere woorden de bedrading eruit tussen twee devices. Daar wordt besproken hoe eenen en nullen en de baud rate ge\"implementeerd worden in signaal levels!
+
+## Bedrading en hardware
+
+Een seriële bus bestaat alleen maar uit twee lijnen (eigenlijk drie als we de GND meerekenen). Een lijn voor de te verzenden data en eentje voor de te onvangen data. Dergelijke devices bezitten dus twee pinnen: de ontvanger (receiver), RX, en de zender (transmitter), TX.
+
+![example image](./images/rxtx.png "Bedrading bij asynchrone transmissie (Full-duplex, bidirectioneel).")
+
+Het is belangrijk aan te stippen dat de notatie van RX en TX labels met respect tot het device zelf. Zo is de RX van een device vebonden met de TX van het ander device, en vice-versa. Dit kan bij andere interfaces anders zijn (uitzondering is natuurlijk voor de GND). Andere interfaces gebruiken bijvoorbeeld MOSI naar MOSI (bij SPI). Maar het gebruik van een cross-kabel is hier logisch. De transmitter moet zijn data doorsturen naar een receiver, niet naar een andere transmitter.
+
+Een serieel interface waarbij beide devices mogen zenden en ontvangen is een full-duplex of half-duplex verbinding. Full-duplex betekent dat beide devices simultaal kunnen zenden en ontvangen. Een half-duplex verbinding wil zeggen dat de seri\"ele devices om beurt kunnen zenden en ontvangen, maar niet simultaan.
+
+Sommige seriële bussen geraken weg met slechts één connectie (met uitsluiting van de GND, die altijd moet worden verbonden tussen de beide devices). Dan spreekt men van een unidirectionele bus. Er kan dus enkel in één richting data worden verstuurd. Bij sommige devices is dit voldoende. Er dient natuurlijk opgermerkt te worden dat het ontvangende device geen data kan terug sturen. Hier spreekt men dan van een simplex verbinding. Er is hier dan enkel nood aan een *single wire* van de master device’s TX naar de listener’s RX lijn.
+
+### Hardware implementation
+
+We weten nu hoe een serieel interface conceptueel eruit ziet. We weten welke verbindingen er moeten worden gelegd tussen de twee devices. Maar hoe wordt een seriële communicatie geïmplementeerd wat betreft de signaal levels? Of met andere woorden, op welke manier worden eenen en nullen gepreseneteerd in een elektrische grootheid? Zoals in de meeste gevallen worden hiervoor elektrische spanningen gebruikt. Op welke wijze worden de logische bit-waarden omgezet in die spanning? En met welke waarde van spanning is dit dan? Op dit vlak is een asynchrone seriële interface te catalogeren in twee groepen. We spreken over enerzijds een RS-232 en anderzijds over zijn TTL-variant.
+
+Wanneer microcontrollers en andere low-level ICs een seriële communicatie realiseren, dan wordt dit normaal gedaan met de beschikbare spanning (meestal de voedingsspanning van de controller). De voorstelling van nullen een eenen wordt dan op TTL (transistor-transistor logic) niveau geregeld. TTL seriële signalen bestaat uit de microcontroller’s voltage supply range - normaal 0V to 3.3V or 5V. Een signaal op VCC level (3.3V, 5V, etc.) indiceert zowel een idle toestand, een bit met waarde 1, als een stop bit. Een 0V (GND) signaal representeert zowel een start bit als een data bit met waarde 0.
+
+![example image](./images/uart.png "Bitstroom bij een UART (spanningsniveaus).")
+
+RS-232, die kan gevonden worden op een SUBD9 connector op computers en randapparaten is net als een TTL signaal, maar dan geflipt op zijn kop. RS-232 signalen bevinden zich normaal tussen -13V en 13V, alhoewel de specificaties spreken van een spreidingsgebied tussen  +/- 3V tot +/- 25V. Een lage spanning wordt hier gepresenteerd door een spanning (-5V, -13V, etc.) stelt volgende toestanden voor: idle line, een stop bit, of een  data bit met waarde 1. Een hoge spanning bij RS-232 signaal betekent ofwel een start bit, of een 0-waarde data bit. That’s kind of the opposite of TTL serial.
+
+![example image](./images/rs232.png "Bitstroom bij een RS232 (spanningsniveaus).")
+
+Bij een embedded systeem wordt meestal de TTL standdard gebruikt. Beperktheid hiervan zit er vooral in dat er geen grote afstanden kunnen worden overbrugd. Bij grotere afstanden treden snel datafouten op. Doordat de spanningsniveaus bij RS-232 verder uit elkaare liggen, kan er hiermee een grotere afstand worden overbrugd. (15 meter met gewone draden). Een standaard als RS-485 is geschikt om nog grotere afstanden te overbruggen.
+
+Wanneer er twee devices serieel met elkaar worden verbonden is het zeer belangrijk dat de spanningsniveaus met elkaar overeenstemmen (matchen). Het is strikt verboden om te interfacen tussen verschillende spanningsniveaus. Schade zal zeker het gevolg zijn van de devices!! Dus een connectie tussen een TTL en een RS-232 is uit ten boze. Een oplossing is om de spanningsniveaus aan te passen, maar ook het signaal te inverteren.
+
+Als vervolg onderzoeken we de tool die microcontrollers gebruiken om hun  data te converteren van een parallelle bus naar een seriële bitstroom. Hierbij wordt gebruik gemaakt van een UART!
+
+## UART
+
+Het laatste stukje van de seriële puzzel is het onderdeel die verantwoordelijk is voor de seri\"ele bitstroom bij microcontrollers. Dankzij de nodige interne registers verzorgt de UART de correcte seri\"ele interface.
+
+Een universal asynchronous receiver/transmitter (UART) is een interne block van het circuitry die verantwoordelijk is voor de implementatie van de seriële communicatie. In essentie, de UART doet zich voor als een tussenschakel tussen parallelle werking van de processor en de seriële interface. De UART bezit dus enerzijds een bus structuur (bv. 8 bit) met de nodige controlelijnen en aan de andere kant zijn twee pinnen, - RX en TX, beschikbaar die de seriële interface vormen.
+
+![example image](./images/uart_device.png "Super-simplified UART interface. Parallel aan de ene zijde, serieel aan de andere kant.")
+
+UARTs bestaan in de vorm van stand-alone ICs, maar ze komen heel frequent en courant voor als intern element binnen een microcontroller. Controleer de datasheet van uw microcontroller op aanwezigheid van UARTs. Sommige bezitten er geen (ze zullen al wel zeldzaam zijn), andere hebben er één, nog andere hebben er meerdere.
+
+De UART verzorgen zowel het verzenden van de data als het ontvangen ervan. De zenderkant (the transmit side), zorgt ervoor dat er een pakket wordt samengesteld met synchronisatiebits, data en desnoods een pariteitbit. Dit frame wordt verzonden bit-na-bit via de Tx pin met de juiste timing volgens de baud rate(bps). Aan de ontvangstzijde verzorgt de UART het bemonsteren van de Rx lijn op de gepaste tijdstippen om zo de correcte data en parieit eruit te halen. Synchronisatiebits en parameters instellingen helpen de UART om ook deze taak correct uit te voeren.
+
+![example image](./images/uart_blok.png "Internal UART block diagram (courtesy of the Exar ST16C550 datasheet)")
+
+Meer geavanceerde UARTs plaatsen de ontvangen data in een buffer en geven een signaal aan de controller dat er data klaar staat zodat de microcontroller deze kan ophalen. UARTs gebruiken hiervoor buffers van het type first-in-first-out (FIFO). Deze buffers kunnen heel beperkt zijn in dataopslag, maar evengoed zijn er controllers die een heel uitgbreide buffer ruimte bezitten.
+
+### Software UART
+
+Als een microcontroller niet beschikt over een UART (of er is een extra nodig, maar niet beschikbaar), dan kan de seri\"ele interface worden gebit-banged - direct door de processor. Dit is de manier waarop  Arduino libraries zijn gebaseerd zoals SoftwareSerial. Bit-banging is processor-intensive, en meestal niet zo precies als een UART.
+
+## Pitfalls
+
+Zo, dit was de seriële communicatie. Hier volgt enkel nog enkele veel voorkomende fouten die zich kunnen voordoen bij het gebruik ervan.
+
+### RX to TX, TX to RX
+
+Het verkeerd verbinden van zenders met ontvangers komt heel regelmatig voor. Let hier op, het kan de UART ook stuk maken. Let vooral op wanneer je twee Tx lijnen aan elkaar zou leggen. Dit kan de UART stuk maken!! Gebruik dus steeds een cross-kabel.
+
+### Baudrate Mismatch
+
+Foutieve instellingen/afspraken tussen de beide devices op vlak van de baud rate, kan leiden tot een foute data overdracht.Als twee devices niet aan dezelfde snelheid communiceren, dan begrijpen de devices elkaar niet doordat de data telkens foutief zal worden gelezen. De ingelezen data zal eruit zien als garbage. Zorg dus dat de baud rate op elkaar is afgestemd.
+
+![example image](./images/wrongbaud.png "Data transmitted at 9600 bps, but received at 19200 bps. Baud mismatch = garbage.")
+
+### Bus Contention
+
+Seriële communicatie is ontwikkeld om slechts twee devices met elkaar te laten communiceren. Als meer dan één device probeert te zenden op dezelfde lijn, dan treed er een databotsing op (Collision). Hierdoor wordt de data corrupt is niet meer betrouwbaar.
+
+Als bijvoorbeeld twee transmitters met elkaar zijn verbonden (beide TX lijnen liggen met elkaar verbonden), dan kunnnen er collisions optreden wanneer beide transmitters op hetzelfde moment data proberen te versturen naar de receiver. Een dergelijke opstelling wordt best sterk vermeden!!
+
+![example image](./images/wrongrs232.png "Twee transmitters zenden naar een single receiver, veroorzaakt de mogelijkheid tot data botsingen.")
+
+Twee devices die proberen data te verzenden op eenzelfde lijn is altijd slecht!! Hardwarematig kan dit de beide zenders beschadigen.  
+
+Wat wel kan, is naar twee ontvangers data sturen vanuit een enkelvoudige zender. Alhoewel dit geen normale opstelling is. Er kan niet geselecteerd worden naar welk device de data zal worden gestuurd. Een seri\"ele communicatie is bedoeld tussen twee devices. 
+
+![example image](./images/recvd2.png "Asynchrone transmissie met een zender en twee ontvangers?.")
 
 ---
 

@@ -4,7 +4,7 @@ Start VS code en open die map in VSC
 
 Maak in github.com een nieuwe Repository aan: geef een naam, en onthou de SSH link
 
-In terminal (VSC) kan je (kan ook in PowerShell)
+In terminal (VSC) kan je (kan ook in PowerShell, zorg dat je in de juste DIR zit)
 
 git init
 git status
