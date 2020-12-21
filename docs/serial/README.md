@@ -549,6 +549,7 @@ int main()
 
 Met de bluetooth mogelijkheden op een smartphone kan er nu gecommuniceerd worden met de processor. Er bestaan vele Apps (gratis) die je kan installeren die als Blue Tooth terminal functioneren. (Realterm op de smartphone dus). Een voorbeeld is op *Android Serial BlueTooth terminal*.  
 
-Test dit uit. Wat is de maximum haalbare communicatie afstand?  
+Test dit uit. Wat is de maximum haalbare communicatie afstand?
+  
 Veel succes,  
 Dhr. Dejonghe.  
