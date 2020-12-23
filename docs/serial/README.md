@@ -65,11 +65,13 @@ De data-blok wordt ingekapseld in een frame. Ieder blok bestaat meestal uit een 
 
 ![example image](./images/frame.png "A serial frame. Sommige onderdelen zijn configureerbaar in aantal bits.")
 
-De eigenlijke informatie bij data die serieel wordt verzonden zit in de data-bits. Het aantal gebruikte bits hiervoor kan variëren tussen 5 bits en 9 bits. Meestal wordt een byte (8 bits) gebruikt die de data representateert, maar andere data-formaten kunnen dus voorkomen. Een 7-bit formaat komt ook regelmatig voor, zeker wanneer de data besdtaat uit tekst die gevormd zijn door de ASCII-tabel.
+De eigenlijke informatie bij data die serieel wordt verzonden zit in de data-bits. Het aantal gebruikte bits hiervoor kan variëren tussen 5 bits en 9 bits. Meestal wordt een byte (8 bits) gebruikt die de data representateert, maar andere data-formaten kunnen dus voorkomen. Een 7-bit formaat komt ook regelmatig voor, zeker wanneer de data bestaat uit tekst die gevormd zijn door de ASCII-tabel.
 
 ![example image](./images/frame2.png "Frame bij asynchrone transmissie.")
 
 Na het vastleggen door beide devices van het aantal te gebruiken data-bits, kan er afgesproken worden hoe de data gerangschikt zal worden in het pakket. Wordt eerst de MSB of komt de LSB eerst aan bod? Wordt in de data eerste de meest-significant-bit (MSB) verstuurd of omgekeerd? Als dit niet gespecifieerd staat, dan mag je ervan uitgaan dat de data wordt verstuurd volgens de laagst-significante bit (LSB) eerst.
+
+![example image](./images/knip.png "Frame bij asynchrone transmissie.")
 
 ### Synchronisatie bits
 

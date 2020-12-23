@@ -154,5 +154,35 @@ int main() {
 
 In vorige opstelling , hardware en software, worden enkele LEDS aangestuurt. De software stuurt echter 8 LEDS aan.
 
-In volgende code kunnen we een dergelijke I²C slave ook gebruiken als inputs (lezen van 8 I/O pinnen). Dit doen we zo:
+In volgende code kunnen we een dergelijke I²C slave ook gebruiken als inputs (lezen van 8 I/O pinnen). Dit doen we zo (hier worden 2 slaves op de bus geplaatst):
 
+```cpp
+//I2C_MasterWrite
+//Dit is een I²C communicatie met als master de Nucleo SDA op D14 en SCL op D15
+//geen pullups nodig.
+//2 PCF8574 slaves: 1 met 8 outputs en 1 met 8 inputs
+//1° pcf8574AP met 8 outputs met adres 0x70 (write)
+//2° pcf8574P met 8 inputs met adres 0x41 (read)
+
+#include "mbed.h"
+
+const int addr = 0x70;                  //PCF8574AP met adres 0
+
+I2C iKwadraatC(I2C_SDA, I2C_SCL);       //SDA op PB_9 (D14) en SCL op PB_8 (D15) geen externe pullups nodig
+
+DigitalOut myled(LED1);
+char teller;
+int main() 
+{
+    char cmd[1];
+    while(1) 
+    {
+        iKwadraatC.read(0x41, cmd, 1);  
+        //cmd[0] = teller;
+        wait(0.1); // 1 sec
+        iKwadraatC.write(addr, cmd, 1);
+        wait(0.1); // 1 sec
+        //teller--;
+    }
+}
+```
