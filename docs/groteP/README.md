@@ -154,7 +154,7 @@ Een dergelijk IC kan, afhankelijk van type tot type, tot 50 V aan de uitgang sch
 
 De diodes in het schema zijn nuttig wanneer inductieve belastingen worden geschakeld. De oplopende EMKz spanning van die belasting wordt aan de hand van deze beveiligingsdioden kortgesloten. De layout van het IC is terug te vinden in de figuur. Een detail van een poort is terug te vinden in de figuur. In dit schema is duidelijk te zien dat de uitgangen enkel een SINK-stroom schakelen en geen SOURCE-stroom.
 
-![example image](./images/uln2803trap.png "An exemplary image")
+![example image](./images/uln2803trap.jpg "An exemplary image")
 
 ![example image](./images/uln2803layout.png "An exemplary image")
 
@@ -258,7 +258,7 @@ Neem Rg voldoende laagohmig. Een betere oplossing is het gebruik maken van MOSFE
 
 MOSFET's zijn erg gevoelig voor elektrostatische ontladingen (Electro-Static Discharge of ESD gevoelig). Neem hiervoor voldoende maatregelen. De natuurlijke elektrische lading van een menselijk lichaam kan voldoende zijn om de MOSFET te beschadigen.
 
-**Een voorbeeld van een N-channel MOSFET van het verrijkingstype afbeelding is weergegeven in de figuur \ref{IRF3205}.**
+**Een voorbeeld van een N-channel MOSFET van het verrijkingstype afbeelding is weergegeven in de figuur.**
 
 ![example image](./images/irf3205.png "An exemplary image")
 
