@@ -282,7 +282,7 @@ Een opto-coupler is een kleine geïntegreerde schakeling waarin zich een led en 
 
 Opto-koppelaars zijn de ideale oplossing om gevoelige elektronische schakelingen te scheiden van elementen in een stuurkring of die op het net werken (opto triac).  Het schakelen van componenten op het net kan immers grote spanningspieken doen ontstaan die elektronische schakelingen kunnen vernietigen of de goede werking ervan in de war sturen.  Typische toepassingen zijn digitale systemen die lampen doen oplichten, maar ook gewone schakelingen die een relais aansturen.
 
-![example image](./images/optocoupler3.jpg "An exemplary image")
+![example image](./images/optocoupler3.png "An exemplary image")
 
 Opto-koppelaars zijn voor die zaken een ideale oplossing omdat er geen enkele verbinding bestaat tussen het deel elektronica (stuurkring) en het deel dat op het net werkt (vermogenkring); er is een volledige galvanische scheiding.  Bijkomend voordelen zijn dat de weerstand tussen in- en uitgang praktisch oneindig is en dat ze zeer hoge frequenties kunnen verwerken.
 
