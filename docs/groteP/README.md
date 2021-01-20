@@ -291,3 +291,75 @@ Opto-koppelaars zijn voor die zaken een ideale oplossing omdat er geen enkele ve
 Opto-couplers kunnen vergeleken worden met een relais, maar dan zonder bewegende delen. Hierdoor kan de schakelfrequentie veel hoger liggen dan een relais.  
 
 ![example image](./images/optotriacs201.jpg "An exemplary image")
+
+## H-brug
+
+![example image](./images/H-bridge.png "An exemplary image")
+
+Microcontrollers worden ook wel gebruikt om motoren aan te sturen die op gelijkstroom werken. Deze worden DC-motoren genoemd. Een goede manier om te weten hoe een DC-motor kan worden aangestuurd is kennis te hebben over de werking ervan. Een dergelijke motor kent eigenlijk twee parameters. De eerste is de snelheid van de motor. De snelheid van een motor wordt uitgedrukt in toeren per minuut (rpm). Een tweede parameter is de draaizin. Als er op de as van de motor wordt gekeken, dan kan de motor in "wijzerzin" draaien (met de wijzers van de klok mee, Clockwise, CW). Of de motor kan in tegenwijzerzin draaien (Counter Clockwise, CCW). 
+
+![example image](./images/motor.jpg "An exemplary image")
+
+Vanuit de microcontroller moet dus zowel de snelheid als de draaizin kunnen worden geregeld (worden aangestuurd). De snelheid zou met een PWM signaal kunnen worden geregeld, maar de draaizin is een stuk moeilijker. Vandaar dat we eerst de werking van de DC-motor eens kort bekijken.
+
+### DC-motor
+
+![example image](./images/dcmotor1.jpg "An exemplary image")
+
+Een DC-motor bestaat uit een stator (stilstaand gedeelte van de motor, behuizing), en een rotor (ronddraaiend gedeelte, rotatieas met spoelen, ook wel anker genoemd).  
+
+![example image](./images/dcmotor2.png "An exemplary image")
+
+* stator : bestaat uit mangneetpolen. Een magneet bestaat uit twee polen, een Noord- en een Zuid-pool. Beide polen worden tegenover elkaar geplaatst binnen de behuizing van de motor. Er is dus een mangnetisch veld in het midden van de motor.
+* rotor : in dit magnetisch veld worden elektrische geleiders voorzien op de rotor. De geleiders liggen in lussen. Indien door een lus een stroom wordt gestuurd, dan ontstaat er op de geleiders van die lus twee krachten (Lorentzkracht). Die twee krachten zijn tegengesteld aan elkaar en vormen een koppel aan krachten. Dit koppel zorgt voor een roterende beweging van de lus. Als dit koppelkrachten groot genoeg is, dan ontstaat een draaibeweging.
+* commutator : via sleepringen of koolborstels kan de elektrische spanning op het roterende anker met de lussen worden aangesloten.  
+
+![example image](./images/Electric_motor.gif "An exemplary image")
+
+De draaibeweging is dus CW of CCW. Om de draaizin van de motor om te keren volstaat het om de poloariteit van de aangesloten spanning op de lus (anker), om te keren. 
+
+### Draaizin bepalen
+
+Net in het laatste zit nu net het probleem. Uit de outputpin van een microcontroller kan alleen maar een 0 (geen spanning) of een 1 (wel spanning) komen. Er kan geen negatieve spanning uit een outputpin komen. Vandaar dat we met een eenvoudige transistor of MOSfet wel een motor zouden kunnen aansturen om de snelheid te regelen (via PWM), maar de motor zal ofwel niet draaien (outputpin = 0) ofwel in één richting draaien (outputpin = 1). Omkeren van draaizin is dus niet mogelijk wanneer we maar één transistor of mosfet zouden gebruiken.
+
+### Meerdere transistoren in H-brug
+
+Door gebruik te maken van meerdere transistoren of mosfets, specifiek in een H-brug opstelling, is men in staat om de stroomzin door het anker van de DC-motor te bepalen. Dit ziet er zo uit:
+
+![example image](./images/brug.jpg "An exemplary image")
+
+De transistoren kunnen voor de eenvoud vervangen worden door schakelaars om de werking ervan te verduidelijken. 
+
+![example image](./images/hbrug.png "An exemplary image")
+
+De transistoren worden gebruikt als schakelaar en deze kunnen dus open of dicht zijn. Door enerzijds S1 en S4 te sluiten kan de stroom van de aangesloten bron door de motor vloeien (stroom vloeit nu van links naar rechts door de motor). Door anderzijds S3 en S2 te sluiten, vloeit de stroom door de motor van rechts naar links. Op die manier wordt de draaizin van de motor gewijzigd. 
+
+![example image](./images/H-bridge_fig1.png "An exemplary image")
+
+Een H-brug met gesloten schakelaars:
+
+![example image](./images/draazin.jpg "An exemplary image")
+
+### L293D motor driver
+
+![example image](./images/l293d.jpg "An exemplary image")
+
+Een dergelijke hbrug werking is volledig in IC vorm te verkrijgen. Er bestaan ook H-brug modules om grotere vermogens van motoren aan te sturen. Met de L293D kunnen laag vermogen motoren worden aangestuurd. Zoek datasheet op en bestudeer deze eens. Er kunnen motoren mee worden aangestuurd tot 36V en tot 1A, en er kunnen twee motoren op aangesloten worden. Handig als je een rijdend wagentje zou willen maken en twee motoren zou nodig hebben.  
+
+In de datasheet van dit IC is een waarheidstabel terug te vinden:
+
+![example image](./images/l293wt.png "An exemplary image")
+
+Hieruit kan het schema worden afgeleid om twee motoren aan te sturen en hiermee de draaizin te bepalen. Hiervoor zijn twee digitale output pinnen nodig van de microcontroller (per motor). De snelheid kan geregeld worden door een pwm signaal 
+
+![example image](./images/hsturing.jpg "An exemplary image")
+
+![example image](./images/l293bedrading.png "An exemplary image")
+
+![example image](./images/l293bedrading.png "An exemplary image")
+
+![example image](./images/l293aansluitingen.jpg "An exemplary image")
+
+Zorg voor een microcontroller opstelling (hardware en software) waarmee een dc motor kan worden aangestuurd. Zorg dat de opstelling in staat is om volgende zaken aan te sturen: Stilstand van de motor, CW draaien van de motor, CCW draaien van de motor en zorg er ook voor als de motor aan het draaien is dat de snelheid ervan kan worden ingesteld.
+
+Veel succes.  
