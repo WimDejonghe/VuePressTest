@@ -350,16 +350,16 @@ In de datasheet van dit IC is een waarheidstabel terug te vinden:
 
 ![example image](./images/l293wt.png "An exemplary image")
 
-Hieruit kan het schema worden afgeleid om twee motoren aan te sturen en hiermee de draaizin te bepalen. Hiervoor zijn twee digitale output pinnen nodig van de microcontroller (per motor). De snelheid kan geregeld worden door een pwm signaal 
+Hieruit kan het schema worden afgeleid om twee motoren aan te sturen en hiermee de draaizin te bepalen. Om de draaizin te bepalen zijn hiervoor twee digitale output pinnen nodig van de microcontroller (per motor), namelijk pin 2 en 7 van het IC bepalen de draaizin. Let wel de pinnen zullen verschillend moeten worden aangestuurd!!
 
-![example image](./images/hsturing.jpg "An exemplary image")
+![example image](./images/l293truth.png "An exemplary image")
 
-![example image](./images/l293bedrading.png "An exemplary image")
+De snelheid kan geregeld worden door een pwm signaal te sturen op pin1 (enable pin) voor motor1. Deze pin kan natuurlijk ook 0/1 worden aangestuurd. logisch 0 is stoppen van de motor / logisch 1 is startten van de motor.
 
 ![example image](./images/l293bedrading.png "An exemplary image")
 
 ![example image](./images/l293aansluitingen.jpg "An exemplary image")
 
-Zorg voor een microcontroller opstelling (hardware en software) waarmee een dc motor kan worden aangestuurd. Zorg dat de opstelling in staat is om volgende zaken aan te sturen: Stilstand van de motor, CW draaien van de motor, CCW draaien van de motor en zorg er ook voor als de motor aan het draaien is dat de snelheid ervan kan worden ingesteld.
+Zorg voor een microcontroller opstelling (hardware en software) waarmee een dc motor kan worden aangestuurd. Zorg dat de opstelling in staat is om volgende zaken aan te sturen: Stilstand van de motor, CW draaien van de motor, CCW draaien van de motor en zorg er ook voor als de motor aan het draaien is dat de snelheid ervan kan worden geregeld (vb via potentiometer).
 
 Veel succes.  
