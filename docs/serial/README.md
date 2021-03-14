@@ -475,7 +475,7 @@ return msg;
 Deze code is niet 100% waterdicht. Twee problemen doen zich voor bij die code:
 
 * Indien je Node-Red (re)start (Deploy) en er zou op dat moment nog een switch ON staan op het dashboard, dan kan de Function-node dit niet weten. Daardoor zal de function-Node ervan uitgaan dat de variabele die de waarde van de switchen moet bijhouden op nul wordt gezet. Hierdoor zal bij het UnSwitchen van die switch er een getal worden afgetrokken van 0. Hierdoor komt de waarde van die variabele negatief te staan, wat hier geen betekenis heeft.
-* Tweede beperking van deze code is dat de omzetting  `String.fromCharCode(Number(waarde))` een omzetting doet van een decimale waarde naar een 7bit waarde. Hierdoor kunnen niet alle 8 LEDS op de shield worden gebruikt (Voor 7 LEDS werkt dit wel best goed)
+* Tweede beperking van deze code is dat de omzetting  `String.fromCharCode(Number(waarde))` een omzetting doet van een decimale waarde naar een 7bit waarde. Hierdoor kunnen niet alle 8 LEDS op de shield worden gebruikt (Voor 7 LEDS werkt dit wel best goed). Een beter resultaat kan bekomen worden door `String.fromCodePoint(Number(waarde))` te gebruiken.  
 
 Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als inzicht in de werking kunnen we de bovenstaande beperkingen accepteren.
 
