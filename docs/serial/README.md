@@ -481,6 +481,53 @@ Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als i
 
 ---
 
+## JSON
+
+![example image](./images/JSON.png "Logo JSON")
+
+JSON of JavaScript Object Notation, is een gestandaardiseerd gegevensformaat. JSON maakt gebruik van voor de mens leesbare tekst in de vorm van data-objecten die bestaan uit een of meer attributen met bijbehorende waarden. Het wordt hoofdzakelijk gebruikt voor uitwisseling van data tussen server en webapplicatie, als een alternatief voor XML.
+
+JSON is oorspronkelijk ontstaan uit de programmeertaal JavaScript, maar is een taalonafhankelijk dataformaat. Code voor het lezen en maken van JSON-data is beschikbaar in een grote diversiteit van programmeertalen. JSON wordt ook veel gebruikt om data te versturen en ontvangen vanuit een webgebaseerde API.
+
+### Structuur JSON
+
+In JSON worden uitsluitend de volgende constructies gebruikt:
+
+* getallen: 3.15
+* strings: "dit is een string"
+* de letterlijke waardes true, false en null
+* array-initialisers: [ waarde , ... ]
+* object-initialisers: { string : waarde , ... }
+
+Het onderstaande voorbeeld is de JSON-weergave van een lijst met twee elementen. Beide elementen zijn zelf een object met weer een diepere structuur.
+
+```JSON
+[
+   {
+      "Naam":"JSON",
+      "Type":"Gegevensuitwisselingsformaat",
+      "isProgrammeertaal":false,
+      "Zie ook":[
+         "XML",
+         "ASN.1"
+      ]
+   },
+   {
+      "Naam":"JavaScript",
+      "Type":"Programmeertaal",
+      "isProgrammeertaal":true,
+      "Jaar":1995
+   }
+]
+
+```
+
+Meer studie over JSON kan op het internet worden gevonden.
+
+De communicatie 
+
+---
+
 ## Blue Tooth
 
 De Nucleo microcontroller bezit geen Blue-Tooth connectie mogelijkheid net zoals veel andere microcontrollers zoals een Arduino. Echter bestaat er een module die via een seriële connectie kan communiceren (bidirectioneel) naar een Blue-Tooth device (bv smartphone).  
