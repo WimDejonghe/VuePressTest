@@ -555,5 +555,3 @@ Test dit uit. Wat is de maximum haalbare communicatie afstand?
   
 Veel succes,  
 Dhr. Dejonghe.  
-
-Brol
