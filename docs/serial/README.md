@@ -990,33 +990,33 @@ void CheckDrukknoppen()
 De NodeRed code zou er dan als volgt kunnen uitzien:
 Voor de Leds kan dit gebruikt worden:
 
-![example image](./images/nr2.png "NodeRed nodes voor dashboard sturing van de LEDS")
+![example image](./images/nr2a.png "NodeRed nodes voor dashboard sturing van de LEDS")
 
 Voor de drukknoppen:
 
-![example image](./images/nr3.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+![example image](./images/nr3a.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
 
 Met een Switch node met meerdere uitgangen (nl 4 in dit geval):
 
-![example image](./images/nr4.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+![example image](./images/nr4a.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
 
-![example image](./images/nr5.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+![example image](./images/nr5a.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
 
-![example image](./images/nr6.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+![example image](./images/nr6a.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
 
-![example image](./images/nr7.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+![example image](./images/nr7a.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
 
 En ook de analoge waarde op de Nucleo (A0 = potentiometer op de shield) kan gevisualiseerd worden:
 
-![example image](./images/nr8.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
+![example image](./images/nr8a.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
 
-![example image](./images/nr9.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
+![example image](./images/nr9a.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
 
-![example image](./images/nr10.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
+![example image](./images/nr10a.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
 
 Met een totale dashboard:
 
-![example image](./images/nr11.png "NodeRed dashbaord")
+![example image](./images/nr11a.png "NodeRed dashbaord")
 
 Test dit allemaal uit.
 
