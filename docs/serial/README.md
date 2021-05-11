@@ -479,7 +479,7 @@ Deze code is niet 100% waterdicht. Twee problemen doen zich voor bij die code:
 
 Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als inzicht in de werking kunnen we de bovenstaande beperkingen accepteren. Zoals in volgende:
 
-![example image](./images/nr1.png "An exemplary image")
+![example image](./images/nr1a.png "An exemplary image")
 
 Met per Switch dashboad LED een Function Node met volgende code (gebruik van NodeRed Context variabelen):
 
