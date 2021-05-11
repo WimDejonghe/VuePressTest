@@ -477,7 +477,48 @@ Deze code is niet 100% waterdicht. Twee problemen doen zich voor bij die code:
 * Indien je Node-Red (re)start (Deploy) en er zou op dat moment nog een switch ON staan op het dashboard, dan kan de Function-node dit niet weten. Daardoor zal de function-Node ervan uitgaan dat de variabele die de waarde van de switchen moet bijhouden op nul wordt gezet. Hierdoor zal bij het UnSwitchen van die switch er een getal worden afgetrokken van 0. Hierdoor komt de waarde van die variabele negatief te staan, wat hier geen betekenis heeft.
 * Tweede beperking van deze code is dat de omzetting  `String.fromCharCode(Number(waarde))` een omzetting doet van een decimale waarde naar een 7bit waarde. Hierdoor kunnen niet alle 8 LEDS op de shield worden gebruikt (Voor 7 LEDS werkt dit wel best goed). Een beter resultaat kan bekomen worden door `String.fromCodePoint(Number(waarde))` te gebruiken.  
 
-Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als inzicht in de werking kunnen we de bovenstaande beperkingen accepteren.
+Natuurlijk kan er gezocht worden om deze opstellingen beter te maken. Maar als inzicht in de werking kunnen we de bovenstaande beperkingen accepteren. Zoals in volgende:
+
+![example image](./images/nr1.png "An exemplary image")
+
+Met per Switch dashboad LED een Function Node met volgende code (gebruik van NodeRed Context variabelen):
+
+```Java
+var led1 = context.get('led1') || 0;
+var inkomendeWaarde = Number(msg.payload);
+
+//waarde = Number(waarde) + inkomendeWaarde;
+context.set('led1', inkomendeWaarde);
+
+//msg.payload = String.fromCodePoint(Number(waarde));
+msg.payload = "";
+
+return msg;
+```
+
+En dan nog eens een gemeenschappelijke Function Node met volgende:
+
+```Java
+var waarde = context.get('waarde') || 0;
+var led1 = context.get('led1') || 0;
+var led2 = context.get('led2') || 0;
+var led3 = context.get('led3') || 0;
+var led4 = context.get('led4') || 0;
+var led5 = context.get('led5') || 0;
+var led6 = context.get('led6') || 0;
+var led7 = context.get('led7') || 0;
+var led8 = context.get('led8') || 0;
+
+//var inkomendeWaarde = Number(msg.payload);
+waarde = led1+led2+led3+led4+led5+led6+led7+led8;
+//waarde = Number(waarde) + inkomendeWaarde;
+context.set('waarde', waarde);
+
+msg.payload = String.fromCodePoint(Number(waarde));
+
+return msg;
+
+```
 
 ---
 
@@ -493,11 +534,11 @@ JSON is oorspronkelijk ontstaan uit de programmeertaal JavaScript, maar is een t
 
 In JSON worden uitsluitend de volgende constructies gebruikt:
 
-* getallen: 3.15
-* strings: "dit is een string"
+* getallen: 3.15 (positieve als negatieve komma-getallen)
+* strings: "dit is een string" (een string wordt altijd tussen dubbele quotes geplaatst)
 * de letterlijke waardes true, false en null
-* array-initialisers: [ waarde , ... ]
-* object-initialisers: { string : waarde , ... }
+* array-initialisers: [ waarde , ... ] (Een lijst staat tussen vierkante haken, de gegevens worden gescheiden door een komma)
+* object-initialisers: { string : waarde , ... } (een object wordt gescheiden door twee accolades. Een onderdeel van een object bestaat uit reeksen van een string en een waarde die gescheiden worden door een komma. De 5 bovenstaande structuren kunnen daar ook deel van uitmaken).
 
 Het onderstaande voorbeeld is de JSON-weergave van een lijst met twee elementen. Beide elementen zijn zelf een object met weer een diepere structuur.
 
@@ -524,7 +565,460 @@ Het onderstaande voorbeeld is de JSON-weergave van een lijst met twee elementen.
 
 Meer studie over JSON kan op het internet worden gevonden.
 
-De communicatie 
+Er zou dus kunnen worden gekozen om de communicatie tussen de Nucleo en Node-Red volledig in een jSON formaat te laten verlopen. Dus ook de LEDS aan te sturen via JSON en dus ook de toestand van de buttons weergeven door een JSON string te sturen naar Node-Red. 
+
+In vorige voorbeelden werd met een constante datastroom gewerkt vanuit de Nucleo naar extern. Hiermee werd de toestand van de drukknoppen op elk ogenblik doorgestuurd. Echter zou er ook kunnen gewerkt worden met een Toggle-functie binnen de Nucleo. Hiermee wordt met de vier drukknoppen steeds de vier bool variabelen getoggled bij het indrukken van een drukknop. In volgend voorbeeld wordt enkel een datastroom gemaakt als een drukknop wordt ingedrukt. Hier wordt overbelasting van de seriële datalijn vermeden.
+
+Hiervoor wijzigen we de code van de Nucleo en verder ook nog de FLOW van Node-Red:
+
+```cpp
+/*  Het programma communcieert met een programma gebouwd in Node-red.
+    Op de Nucleo wordt de Nucleo-shield geplaatst.
+    Vanaf dat er op 1 van de vier drukknoppen gedrukt wordt, wordt de status
+    van de knop getoggeld en wordt er een bericht verstuurd in een JSON-formaat
+    via de seriële bus. Als er aan de potentiometer wordt gedraaid wordt 
+    zijn waarde via de seriële bus eveneens verstuurd.
+    Het programma in Node-red verstuurd eveneens berichten naar de Nucleo in een
+    JSON-formaat die de 8 leds kan aan- of uitschakelen.
+    De baudrate is 9600bps, 8 databits, geen pariteit en 1 stopbit.
+*/ 
+#include "mbed.h"
+
+Serial Communicatie(SERIAL_TX, SERIAL_RX);//Declaratie van de seriële verbinding.
+
+//Declaratie van de 8 leds, de potentiometer en de 4 drukknoppen.
+DigitalOut led1(A5);
+DigitalOut led2(D3);
+DigitalOut led3(D4);
+DigitalOut led4(D5);
+DigitalOut led5(D6);
+DigitalOut led6(D7);
+DigitalOut led7(D9);
+DigitalOut led8(D10);
+AnalogIn potentiometer(A0);
+DigitalIn sw1(A1);
+DigitalIn sw2(A2);
+DigitalIn sw3(A3);
+DigitalIn sw4(A4);
+
+unsigned char OntvangenByte = 0; //variabele om een ontvangen byte in te bewaren
+void StuurLed (); //Functie die de leds aan- en uitzetten.
+void OntvangenData(); // Kijken of er data is ontvangen.
+void CheckDrukknoppen(); //Kijken of er een drukknop is ingedrukt.
+void CheckPotentiometer(); //Kijken of de potentiometer verdraaid is.
+    
+//variabelen nodig voor de 4 drukknoppen
+int ToestandSw1 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT
+int ToestandSw2 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT 
+int ToestandSw3 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT
+int ToestandSw4 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT
+bool VorigeWaardeSw1 =0; //Variabele nodig voor negatieve flankdetectie van sw1.
+bool VorigeWaardeSw2 =0; //Variabele nodig voor negatieve flankdetectie van sw2. 
+bool VorigeWaardeSw3 =0; //Variabele nodig voor negatieve flankdetectie van sw3.
+bool VorigeWaardeSw4 =0; //Variabele nodig voor negatieve flankdetectie van sw4.
+
+// timer nodig om het denderen van de drukknoppen op te vangen.
+Timer Antidendertimer;
+
+int State = 0; //Variabele nodig 
+int TeSturenLed;//Variabele nodig welke led er gestuurd moet worden.
+bool WaardeLed; //De waarde die de led moet hebben die gestuurd moet worden.
+
+// variabelen nodig voor de waarde van de potentiometer.
+// Vanaf dat er een bepaald verschil is t.o.v. de vorige gemeten waarde dan
+// wordt de waarde seriëel verstuurd.
+float VorigeGemetenWaarde=0;
+float gemetenWaarde100;
+float gemetenWaarde;
+int Verschil;
+
+//******************************************************************************
+// Hoofdroutine   
+int main()
+{
+    Communicatie.baud(9600);//baudrate instellen op 115,2kbaud.
+    Antidendertimer.start(); //starten van de antidendertimer.
+
+    gemetenWaarde = potentiometer.read();//lezen van de potmeterwaarde.
+    //Bewaren van de waarde om nadien te vergelijken of deze veranderd is zodat
+    // niet constant de waarde serieel verstuurd moet worden
+    VorigeGemetenWaarde = gemetenWaarde*100;
+
+    //Versturen van de waarden bij start.
+   Communicatie.printf("{\"button\":\"1\",\"toestand\": %i }\r\n", ToestandSw1);
+   Communicatie.printf("{\"button\":\"2\",\"toestand\": %i }\r\n", ToestandSw2);
+   Communicatie.printf("{\"button\":\"3\",\"toestand\": %i }\r\n", ToestandSw3);
+   Communicatie.printf("{\"button\":\"4\",\"toestand\": %i }\r\n", ToestandSw4);
+   Communicatie.printf("{\"analog\":\"1\",\"waarde\": %f }\r\n",gemetenWaarde);
+    
+  while (true)
+  {
+    OntvangenData(); // Kijken als er data serieel ontvangen is.
+    CheckDrukknoppen(); //Kijken of er een drukknop is ingedrukt.
+    CheckPotentiometer(); //Kijken of de potentiometer verdraaid is.
+  }
+}
+//******************************************************************************
+
+//******************************************************************************
+// Lezen van de toestand van de potentiometer. Deze vergelijken met een vorige
+// gemeten waarde en als deze 1% is gewijzigd wordt de waarde serieel verstuurd.
+void CheckPotentiometer()
+{
+    //lezen waarde potmeter. Resultaat is een kommagetal tussen 1 en 0
+    gemetenWaarde = potentiometer.read(); 
+
+    //gelezen waarde *100 zodat we de procentuele waarde hebben.
+    gemetenWaarde100 = gemetenWaarde*100;
+    
+     //Kijken welke waarde het grootst is. De huidige waarde of de vorige waarde.
+    if (VorigeGemetenWaarde > gemetenWaarde100)
+    {
+      Verschil = VorigeGemetenWaarde - gemetenWaarde100; //Verschil berekenen.
+    } 
+    else
+    {
+      Verschil = gemetenWaarde100 - VorigeGemetenWaarde; //Verschil berekenen.
+    } 
+
+    if (Verschil > 1) //Kijken als het verschil groter is dan 1%
+    {
+      //Het verschil is groter dan 1% en de waarde wordt verstuurd.
+      Communicatie.printf("{\"analog\":\"1\",\"waarde\":%f}\r\n",gemetenWaarde);
+      VorigeGemetenWaarde = gemetenWaarde100;//De nieuwe waarde wordt bewaard.
+    }
+}
+//******************************************************************************
+
+
+//******************************************************************************
+// Functie die kijkt of er data serieel is ontvangen.De data die ontvangen wordt
+// is de data om de 8 leds te sturen. Dit wordt verstuurd in een JSON-formaat.
+// Er zijn 16 verschillende JSON-strings die ontvangen worden.
+// {"LED":"1","toestand":"1"}    {"LED":"1","toestand":"0"}
+// {"LED":"2","toestand":"1"}    {"LED":"2","toestand":"0"}
+// {"LED":"3","toestand":"1"}    {"LED":"3","toestand":"0"}
+// {"LED":"4","toestand":"1"}    {"LED":"4","toestand":"0"}
+// {"LED":"5","toestand":"1"}    {"LED":"5","toestand":"0"}
+// {"LED":"6","toestand":"1"}    {"LED":"6","toestand":"0"}
+// {"LED":"7","toestand":"1"}    {"LED":"7","toestand":"0"}
+// {"LED":"8","toestand":"1"}    {"LED":"8","toestand":"0"}
+// De strings worden ontleed en welke led en de toestand wordt in een veriabele
+// geplaatst om later in deze functie aan- of af te zetten.
+void OntvangenData()
+{
+    while (Communicatie.readable()) //Zolang er bytes ontvangen zijn worden
+    {                               //deze opgehaald en verwerkt.
+      OntvangenByte = Communicatie.getc();// Lezen van de ontvangen byte.
+      switch (State)
+      {
+        case 0: //Zoek naar een '{' -> Dit is 0x7B
+        {
+            if (OntvangenByte == '{') State=1;
+            break;           
+        }    
+        case 1: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=2;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }    
+        case 2: //Zoek naar een 'L' -> Dit is 0x4C
+        {
+            if (OntvangenByte == 'L') State=3;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 3: //Zoek naar een 'E' -> Dit is 0x45
+        {
+            if (OntvangenByte == 'E') State=4;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 4: //Zoek naar een 'D' -> Dit is 0x44
+        {
+            if (OntvangenByte == 'D') State=5;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 5: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=6;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 6: //Zoek naar een ':' -> Dit is 0x3A
+        {
+            if (OntvangenByte == ':') State=7;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 7: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=8;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 8: //Zoek naar een cijfer tussen 1 t.e.m. 8 ->
+                // '1' = 0x31 en '8' = 0x38
+        {
+            TeSturenLed = OntvangenByte - 0x30;
+            if ((TeSturenLed >0) && (TeSturenLed <9))
+            {
+                State=9;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 9: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=10;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 10: //Zoek naar een ',' -> Dit is 0x2C
+        {
+            if (OntvangenByte == ',') State=11;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 11: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=12;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 12: //Zoek naar een 't' -> Dit is 0x74
+        {
+            if (OntvangenByte == 't') State=13;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 13: //Zoek naar een 'o' -> Dit is 0x6F
+        {
+            if (OntvangenByte == 'o') State=14;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 14: //Zoek naar een 'e' -> Dit is 0x65
+        {
+            if (OntvangenByte == 'e') State=15;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 15: //Zoek naar een 's' -> Dit is 0x73
+        {
+            if (OntvangenByte == 's') State=16;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 16: //Zoek naar een 't' -> Dit is 0x74
+        {
+            if (OntvangenByte == 't') State=17;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 17: //Zoek naar een 'a' -> Dit is 0x61
+        {
+            if (OntvangenByte == 'a') State=18;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 18: //Zoek naar een 'n' -> Dit is 0x6E
+        {
+            if (OntvangenByte == 'n') State=19;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 19: //Zoek naar een 'd' -> Dit is 0x64
+        {
+            if (OntvangenByte == 'd') State=20;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 20: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=21;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 21: //Zoek naar een ':' -> Dit is 0x3A
+        {
+            if (OntvangenByte == ':') State=22;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 22: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=23;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 23: //Zoek naar een '0' of een '1' -> Dit is 0x22
+        {
+            if (OntvangenByte == '0')
+            {
+                WaardeLed = false;
+                State=24;
+            }
+            else if (OntvangenByte == '1')
+            {
+                WaardeLed = true;
+                State=24;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 24: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=25;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 25: //Zoek naar een '}' -> Dit is 0x7D
+        {
+            if (OntvangenByte == '}')
+            {
+                StuurLed(); //Het sturen van de led.
+            }
+            State=0;
+            break;           
+        }
+      }   
+    }
+}
+//******************************************************************************
+
+
+//******************************************************************************
+// Deze functie stuurt de gewenste led aan of uit.
+void StuurLed ()
+{
+    switch (TeSturenLed)
+    {
+        case 1: //led1 sturen
+        {
+            led1 = WaardeLed;
+            break;           
+        }    
+        case 2: //led2 sturen
+        {
+            led2 = WaardeLed;
+            break;           
+        }    
+        case 3: //led3 sturen
+        {
+            led3 = WaardeLed;
+            break;           
+        }    
+        case 4: //led4 sturen
+        {
+            led4 = WaardeLed;
+            break;           
+        }    
+        case 5: //led5 sturen
+        {
+            led5 = WaardeLed;
+            break;           
+        }    
+        case 6: //led6 sturen
+        {
+            led6 = WaardeLed;
+            break;           
+        }    
+        case 7: //led7 sturen
+        {
+            led7 = WaardeLed;
+            break;           
+        }    
+        case 8: //led8 sturen
+        {
+            led8 = WaardeLed;
+            break;           
+        }    
+    }
+}
+//******************************************************************************
+
+//******************************************************************************
+// Functie die kijkt of er een dalende flank is op de 4 drukknoppen.
+// Als de drukknop is ingedrukt wordt zijn toestand gewijzigd en wordt deze
+// serieel verstuurd.
+void CheckDrukknoppen()
+{
+ //functie wordt om de 5ms uitgevoerd om dender
+ // van de drukknoppen weg te werken.
+  if (Antidendertimer.read_ms() >= 5)
+  {
+   Antidendertimer.reset(); //Op 0 zetten van de timer.
+        
+    if ((sw1==0) && (VorigeWaardeSw1==1))//Controle ingedrukte toets
+    {
+     ToestandSw1 = !ToestandSw1; //inverteren van de toestand.
+     Communicatie.printf("{\"button\":\"1\",\"toestand\":%i}\r\n", ToestandSw1);
+    } //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw1 = sw1; 
+        
+    if ((sw2==0) && (VorigeWaardeSw2==1))//Controle ingedrukte toets
+    {
+     ToestandSw2 = !ToestandSw2;
+     Communicatie.printf("{\"button\":\"2\",\"toestand\":%i}\r\n", ToestandSw2);
+    } //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw2 = sw2;
+    
+    if ((sw3==0) && (VorigeWaardeSw3==1))//Controle ingedrukte toets
+    {
+     ToestandSw3 = !ToestandSw3;
+     Communicatie.printf("{\"button\":\"3\",\"toestand\":%i}\r\n", ToestandSw3);
+    } //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw3 = sw3;
+    
+    if ((sw4==0) && (VorigeWaardeSw4==1))//Controle ingedrukte toets
+    {
+     ToestandSw4 = !ToestandSw4;
+     Communicatie.printf("{\"button\":\"4\",\"toestand\":%i}\r\n", ToestandSw4);
+    }  //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw4 = sw4;     
+  }
+}
+//******************************************************************************
+
+```
+
+---
+
+De NodeRed code zou er dan als volgt kunnen uitzien:
+Voor de Leds kan dit gebruikt worden:
+
+![example image](./images/nr2.png "NodeRed nodes voor dashboard sturing van de LEDS")
+
+Voor de drukknoppen:
+
+![example image](./images/nr3.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+
+Met een Switch node met meerdere uitgangen (nl 4 in dit geval):
+
+![example image](./images/nr4.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+
+![example image](./images/nr5.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+
+![example image](./images/nr6.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+
+![example image](./images/nr7.png "NodeRed nodes voor dashboard visualisatie van de drukknoppen")
+
+En ook de analoge waarde op de Nucleo (A0 = potentiometer op de shield) kan gevisualiseerd worden:
+
+![example image](./images/nr8.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
+
+![example image](./images/nr9.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
+
+![example image](./images/nr10.png "NodeRed nodes voor dashboard visualisatie van de analoge waarde = potentiometer")
+
+Met een totale dashboard:
+
+![example image](./images/nr11.png "NodeRed dashbaord")
+
+Test dit allemaal uit.
 
 ---
 
