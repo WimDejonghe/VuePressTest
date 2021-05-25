@@ -1018,6 +1018,690 @@ Met een totale dashboard:
 
 ![example image](./images/nr11a.png "NodeRed dashbaord")
 
+Wat in de code nog ontbreekt is de mogelijkheid om van extern een PWM signaal in te stellen. Het zal meestal gewenst zijn om enkel de duty cycle van het signaal te manipuleren. De frequentie is hier op een vaste waarde ingesteld. Dit zou ook via een JSON string kunnen gebeuren. Die zou er zo kunnen uitzien:
+
+```JSON
+{"PWM":"0", "toestand":"000"}
+```
+
+Dan zal de MBED code er iets anders uitzien. De structuur waarbij char per char via de seriële connectie wordt ingelezen zal deze vorm ook moeten ondervangen. Let wel dat bij toestand de waarde, bestaande uit drie cijfer characters, kan vaieëren tussen "000" en "100", waarmee de duty cycle van het PWM signaal kan worden ingesteld.
+
+```cpp
+/*  Het programma communcieert met een programma gebouwd in Node-red.
+    Op de Nucleo wordt de Nucleo-shield geplaatst.
+    Vanaf dat er op 1 van de vier drukknoppen gedrukt wordt, wordt de status
+    van de knop GETOGGLED en wordt er een bericht verstuurd in een JSON-formaat
+    via de seriële bus. Als er aan de potentiometer wordt gedraaid wordt 
+    zijn waarde via de seriële bus eveneens verstuurd.
+    Het programma in Node-red verstuurd eveneens berichten naar de Nucleo in een
+    JSON-formaat die de 8 leds kan aan- of uitschakelen.
+    De baudrate is 9600bps, 8 databits, geen pariteit en 1 stopbit.
+*/ 
+#include "mbed.h"
+
+Serial Communicatie(SERIAL_TX, SERIAL_RX);//Declaratie van de seriële verbinding.
+
+//Declaratie van de 8 leds, de potentiometer en de 4 drukknoppen.
+DigitalOut led1(A5);
+DigitalOut led2(D3);
+DigitalOut led3(D4);
+DigitalOut led4(D5);
+DigitalOut led5(D6);
+DigitalOut led6(D7);
+DigitalOut led7(D9);
+DigitalOut led8(D10);
+AnalogIn potentiometer(A0);
+DigitalIn sw1(A1);
+DigitalIn sw2(A2);
+DigitalIn sw3(A3);
+DigitalIn sw4(A4);
+PwmOut pwm1 (D8);
+PwmOut pwm2 (D11);
+PwmOut pwm3 (D12);
+
+
+unsigned char OntvangenByte = 0; //variabele om een ontvangen byte in te bewaren
+void StuurLed (); //Functie die de leds aan- en uitzetten.
+void StuurPWM (); //Functie die de PWM uitgang aanstuurt.
+void OntvangenData(); // Kijken of er data is ontvangen.
+void CheckDrukknoppen(); //Kijken of er een drukknop is ingedrukt.
+void CheckPotentiometer(); //Kijken of de potentiometer verdraaid is.
+    
+//variabelen nodig voor de 4 drukknoppen
+int ToestandSw1 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT
+int ToestandSw2 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT 
+int ToestandSw3 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT
+int ToestandSw4 =0; //Geeft de toestand van sw1 weer. 1=AAN en 0=UIT
+bool VorigeWaardeSw1 =0; //Variabele nodig voor negatieve flankdetectie van sw1.
+bool VorigeWaardeSw2 =0; //Variabele nodig voor negatieve flankdetectie van sw2. 
+bool VorigeWaardeSw3 =0; //Variabele nodig voor negatieve flankdetectie van sw3.
+bool VorigeWaardeSw4 =0; //Variabele nodig voor negatieve flankdetectie van sw4.
+
+// timer nodig om het denderen van de drukknoppen op te vangen.
+Timer Antidendertimer;
+
+int State = 0; //Variabele nodig 
+int TeSturenLed;//Variabele nodig welke led er gestuurd moet worden.
+int TeSturenPWM;//Variabele nodig welke PWM output er wordt gebruikt.
+int TeSturenPWMDC_honderdtallen;
+int TeSturenPWMDC_tientallen;
+int TeSturenPWMDC_eenheden;
+int TeSturenPWMDC;//Variabele nodig om PWM duty cycle te maken uit de
+//honderdtallen, tientallen en eenheden. (000 => 100)
+bool WaardeLed; //De waarde die de led moet hebben die gestuurd moet worden.
+
+// variabelen nodig voor de waarde van de potentiometer.
+// Vanaf dat er een bepaald verschil is t.o.v. de vorige gemeten waarde dan
+// wordt de waarde seriëel verstuurd.
+float VorigeGemetenWaarde=0;
+float gemetenWaarde100;
+float gemetenWaarde;
+int Verschil;
+
+//******************************************************************************
+// Hoofdroutine   
+int main()
+{
+    Communicatie.baud(9600);//baudrate instellen op 115,2kbaud.
+    Antidendertimer.start(); //starten van de antidendertimer.
+
+    gemetenWaarde = potentiometer.read();//lezen van de potmeterwaarde.
+    //Bewaren van de waarde om nadien te vergelijken of deze veranderd is zodat
+    // niet constant de waarde serieel verstuurd moet worden
+    VorigeGemetenWaarde = gemetenWaarde*100;
+
+    //Versturen van de waarden bij start.
+   Communicatie.printf("{\"button\":\"1\",\"toestand\": %i }\r\n", ToestandSw1);
+   Communicatie.printf("{\"button\":\"2\",\"toestand\": %i }\r\n", ToestandSw2);
+   Communicatie.printf("{\"button\":\"3\",\"toestand\": %i }\r\n", ToestandSw3);
+   Communicatie.printf("{\"button\":\"4\",\"toestand\": %i }\r\n", ToestandSw4);
+   Communicatie.printf("{\"analog\":\"1\",\"waarde\": %f }\r\n",gemetenWaarde);
+    
+    
+  while (true)
+  {
+    OntvangenData(); // Kijken als er data serieel ontvangen is.
+    CheckDrukknoppen(); //Kijken of er een drukknop is ingedrukt.
+    CheckPotentiometer(); //Kijken of de potentiometer verdraaid is.
+  }
+}
+//******************************************************************************
+
+//******************************************************************************
+// Lezen van de toestand van de potentiometer. Deze vergelijken met een vorige
+// gemeten waarde en als deze 1% is gewijzigd wordt de waarde serieel verstuurd.
+void CheckPotentiometer()
+{
+    //lezen waarde potmeter. Resultaat is een kommagetal tussen 1 en 0
+    gemetenWaarde = potentiometer.read(); 
+
+    //gelezen waarde *100 zodat we de procentuele waarde hebben.
+    gemetenWaarde100 = gemetenWaarde*100;
+    
+     //Kijken welke waarde het grootst is. De huidige waarde of de vorige waarde.
+    if (VorigeGemetenWaarde > gemetenWaarde100)
+    {
+      Verschil = VorigeGemetenWaarde - gemetenWaarde100; //Verschil berekenen.
+    } 
+    else
+    {
+      Verschil = gemetenWaarde100 - VorigeGemetenWaarde; //Verschil berekenen.
+    } 
+
+    if (Verschil > 1) //Kijken als het verschil groter is dan 1%
+    {
+      //Het verschil is groter dan 1% en de waarde wordt verstuurd.
+      Communicatie.printf("{\"analog\":\"1\",\"waarde\":%f}\r\n",gemetenWaarde);
+      VorigeGemetenWaarde = gemetenWaarde100;//De nieuwe waarde wordt bewaard.
+    }
+}
+//******************************************************************************
+
+
+//******************************************************************************
+// Functie die kijkt of er data serieel is ontvangen.De data die ontvangen wordt
+// is de data om de 8 leds te sturen. Dit wordt verstuurd in een JSON-formaat.
+// Er zijn 16 verschillende JSON-strings die ontvangen worden.
+// {"LED":"1","toestand":"1"}    {"LED":"1","toestand":"0"}
+// {"LED":"2","toestand":"1"}    {"LED":"2","toestand":"0"}
+// {"LED":"3","toestand":"1"}    {"LED":"3","toestand":"0"}
+// {"LED":"4","toestand":"1"}    {"LED":"4","toestand":"0"}
+// {"LED":"5","toestand":"1"}    {"LED":"5","toestand":"0"}
+// {"LED":"6","toestand":"1"}    {"LED":"6","toestand":"0"}
+// {"LED":"7","toestand":"1"}    {"LED":"7","toestand":"0"}
+// {"LED":"8","toestand":"1"}    {"LED":"8","toestand":"0"}
+// De strings worden ontleed en welke led en de toestand wordt in een veriabele
+// geplaatst om later in deze functie aan- of af te zetten.
+void OntvangenData()
+{
+    while (Communicatie.readable()) //Zolang er bytes ontvangen zijn worden
+    {                               //deze opgehaald en verwerkt.
+      OntvangenByte = Communicatie.getc();// Lezen van de ontvangen byte.
+      switch (State)
+      {
+        case 0: //Zoek naar een '{' -> Dit is 0x7B
+        {
+            if (OntvangenByte == '{') State=1;
+            break;           
+        }    
+        case 1: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=2;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }    
+        case 2: //Zoek naar een 'L' -> Dit is 0x4C ||| of een 'P' -> Dit is 0x50
+        {
+            
+            if (OntvangenByte == 'L') State=3;
+            else if (OntvangenByte == 'P') State = 26;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 3: //Zoek naar een 'E' -> Dit is 0x45
+        {
+            if (OntvangenByte == 'E') State=4;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 4: //Zoek naar een 'D' -> Dit is 0x44
+        {
+            if (OntvangenByte == 'D') State=5;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 5: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=6;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 6: //Zoek naar een ':' -> Dit is 0x3A
+        {
+            if (OntvangenByte == ':') State=7;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 7: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=8;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 8: //Zoek naar een cijfer tussen 1 t.e.m. 8 ->
+                // '1' = 0x31 en '8' = 0x38
+        {
+            TeSturenLed = OntvangenByte - 0x30;
+            if ((TeSturenLed >0) && (TeSturenLed <9))
+            {
+                State=9;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 9: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=10;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 10: //Zoek naar een ',' -> Dit is 0x2C
+        {
+            if (OntvangenByte == ',') State=11;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 11: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=12;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 12: //Zoek naar een 't' -> Dit is 0x74
+        {
+            if (OntvangenByte == 't') State=13;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 13: //Zoek naar een 'o' -> Dit is 0x6F
+        {
+            if (OntvangenByte == 'o') State=14;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 14: //Zoek naar een 'e' -> Dit is 0x65
+        {
+            if (OntvangenByte == 'e') State=15;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 15: //Zoek naar een 's' -> Dit is 0x73
+        {
+            if (OntvangenByte == 's') State=16;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 16: //Zoek naar een 't' -> Dit is 0x74
+        {
+            if (OntvangenByte == 't') State=17;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 17: //Zoek naar een 'a' -> Dit is 0x61
+        {
+            if (OntvangenByte == 'a') State=18;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 18: //Zoek naar een 'n' -> Dit is 0x6E
+        {
+            if (OntvangenByte == 'n') State=19;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 19: //Zoek naar een 'd' -> Dit is 0x64
+        {
+            if (OntvangenByte == 'd') State=20;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 20: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=21;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 21: //Zoek naar een ':' -> Dit is 0x3A
+        {
+            if (OntvangenByte == ':') State=22;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 22: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=23;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 23: //Zoek naar een '0' of een '1' -> Dit is 0x22
+        {
+            if (OntvangenByte == '0')
+            {
+                WaardeLed = false;
+                State=24;
+            }
+            else if (OntvangenByte == '1')
+            {
+                WaardeLed = true;
+                State=24;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 24: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=25;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 25: //Zoek naar een '}' -> Dit is 0x7D
+        {
+            if (OntvangenByte == '}')
+            {
+                StuurLed(); //Het sturen van de led.
+            }
+            State=0;
+            break;           
+        }
+        
+        
+    //************************************
+    
+    case 26: //Zoek naar een 'W' -> Dit is 0x57
+        {
+
+            if (OntvangenByte == 'W') State=27;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 27: //Zoek naar een 'M' -> Dit is 0x4D
+        {
+            if (OntvangenByte == 'M') State=28;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 28: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=29;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 29: //Zoek naar een ':' -> Dit is 0x3A
+        {
+            if (OntvangenByte == ':') State=30;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 30: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=31;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 31: //Zoek naar een cijfer tussen 1 t.e.m. 8 ->
+                // '1' = 0x31 en '8' = 0x38
+        {
+            TeSturenPWM = OntvangenByte - 0x30;
+            if ((TeSturenPWM >0) && (TeSturenPWM <9))
+            {
+                State=32;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 32: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=33;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 33: //Zoek naar een ',' -> Dit is 0x2C
+        {
+            if (OntvangenByte == ',') State=34;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 34: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=35;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 35: //Zoek naar een 't' -> Dit is 0x74
+        {
+            if (OntvangenByte == 't') State=36;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 36: //Zoek naar een 'o' -> Dit is 0x6F
+        {
+            if (OntvangenByte == 'o') State=37;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 37: //Zoek naar een 'e' -> Dit is 0x65
+        {
+            if (OntvangenByte == 'e') State=38;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 38: //Zoek naar een 's' -> Dit is 0x73
+        {
+            if (OntvangenByte == 's') State=39;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 39: //Zoek naar een 't' -> Dit is 0x74
+        {
+            if (OntvangenByte == 't') State=40;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 40: //Zoek naar een 'a' -> Dit is 0x61
+        {
+            if (OntvangenByte == 'a') State=41;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 41: //Zoek naar een 'n' -> Dit is 0x6E
+        {
+            if (OntvangenByte == 'n') State=42;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 42: //Zoek naar een 'd' -> Dit is 0x64
+        {
+            if (OntvangenByte == 'd') State=43;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 43: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=44;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 44: //Zoek naar een ':' -> Dit is 0x3A
+        {
+            if (OntvangenByte == ':') State=45;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 45: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=46;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 46: //Zoek naar een getal tussen [0 - 9]
+        {
+            TeSturenPWMDC_honderdtallen = OntvangenByte - 0x30;
+            
+            if((TeSturenPWMDC_honderdtallen>= 0)&&(TeSturenPWMDC_honderdtallen<= 9))
+            {
+                State=47;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;              
+        }
+        
+        case 47: //Zoek naar een getal tussen [0 - 9]
+        {
+            TeSturenPWMDC_tientallen = OntvangenByte - 0x30;
+            
+            if((TeSturenPWMDC_tientallen>=0)&&(TeSturenPWMDC_tientallen<=9))
+            {
+                State=48;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;              
+        }
+        
+        case 48: //Zoek naar een getal tussen [0 - 9]
+        {
+            TeSturenPWMDC_eenheden = OntvangenByte - 0x30;
+            
+            if ((TeSturenPWMDC_eenheden >= 0) && (TeSturenPWMDC_eenheden <= 9))
+            {
+                State=49;
+            }
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;              
+        }
+        
+        //********************************************
+        case 49: //Zoek naar een '"' -> Dit is 0x22
+        {
+            if (OntvangenByte == '"') State=50;
+            else State=0; //Er is een fout, alle code weggooien behalve {
+            break;           
+        }
+        case 50: //Zoek naar een '}' -> Dit is 0x7D
+        {
+            if (OntvangenByte == '}')
+            {
+                StuurPWM(); //Het sturen van PWM uitgang.
+            }
+            State=0;
+            break;           
+        }
+      }   
+    }
+}
+//******************************************************************************
+
+
+//******************************************************************************
+// Deze functie stuurt de gewenste led aan of uit.
+void StuurLed ()
+{
+    switch (TeSturenLed)
+    {
+        case 1: //led1 sturen
+        {
+            led1 = WaardeLed;
+            break;           
+        }    
+        case 2: //led2 sturen
+        {
+            led2 = WaardeLed;
+            break;           
+        }    
+        case 3: //led3 sturen
+        {
+            led3 = WaardeLed;
+            break;           
+        }    
+        case 4: //led4 sturen
+        {
+            led4 = WaardeLed;
+            break;           
+        }    
+        case 5: //led5 sturen
+        {
+            led5 = WaardeLed;
+            break;           
+        }    
+        case 6: //led6 sturen
+        {
+            led6 = WaardeLed;
+            break;           
+        }    
+        case 7: //led7 sturen
+        {
+            led7 = WaardeLed;
+            break;           
+        }    
+        case 8: //led8 sturen
+        {
+            led8 = WaardeLed;
+            break;           
+        }    
+    }
+}
+//******************************************************************************
+
+//******************************************************************************
+// Functie die kijkt of er een dalende flank is op de 4 drukknoppen.
+// Als de drukknop is ingedrukt wordt zijn toestand gewijzigd en wordt deze
+// serieel verstuurd.
+void CheckDrukknoppen()
+{
+ //functie wordt om de 5ms uitgevoerd om dender
+ // van de drukknoppen weg te werken.
+  if (Antidendertimer.read_ms() >= 5)
+  {
+   Antidendertimer.reset(); //Op 0 zetten van de timer.
+        
+    if ((sw1==0) && (VorigeWaardeSw1==1))//Controle ingedrukte toets
+    {
+     ToestandSw1 = !ToestandSw1; //inverteren van de toestand.
+     Communicatie.printf("{\"button\":\"1\",\"toestand\":%i}\r\n", ToestandSw1);
+    } //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw1 = sw1; 
+        
+    if ((sw2==0) && (VorigeWaardeSw2==1))//Controle ingedrukte toets
+    {
+     ToestandSw2 = !ToestandSw2;
+     Communicatie.printf("{\"button\":\"2\",\"toestand\":%i}\r\n", ToestandSw2);
+    } //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw2 = sw2;
+    
+    if ((sw3==0) && (VorigeWaardeSw3==1))//Controle ingedrukte toets
+    {
+     ToestandSw3 = !ToestandSw3;
+     Communicatie.printf("{\"button\":\"3\",\"toestand\":%i}\r\n", ToestandSw3);
+    } //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw3 = sw3;
+    
+    if ((sw4==0) && (VorigeWaardeSw4==1))//Controle ingedrukte toets
+    {
+     ToestandSw4 = !ToestandSw4;
+     Communicatie.printf("{\"button\":\"4\",\"toestand\":%i}\r\n", ToestandSw4);
+    }  //bewaren van de huidige toestand, nodig voor de flankdetectie.
+    VorigeWaardeSw4 = sw4;     
+  }
+}
+//******************************************************************************
+
+
+//******************************************************************************
+// Deze functie stuurt de PWM uitgang aan.
+void StuurPWM ()
+{
+    float waardeDutyCycle = ((TeSturenPWMDC_honderdtallen*100) + (TeSturenPWMDC_tientallen * 10) + (TeSturenPWMDC_eenheden))/100.0;
+    if (waardeDutyCycle > 1) waardeDutyCycle = 0;
+        
+    switch(TeSturenPWM)
+    {
+        case 1 :    //pwm1 aansturen
+        {
+            pwm1.period(0.005);         //Frequentie van PWM = 200Hz
+            pwm1.write(waardeDutyCycle);
+            break;
+        }
+        case 2 :    //pwm2 aansturen
+        {
+            pwm2.period(0.005);
+            pwm2.write(waardeDutyCycle);
+            break;
+        }
+        case 3 :    //pwm3 aansturen
+        {
+            pwm3.period(0.005);
+            pwm3.write(waardeDutyCycle);
+            break;
+        }
+    }
+}
+//******************************************************************************
+```
+
+In NodeRed zou je dan volgend commando kunnen gebruiken om de JSON string mooi af te werken:
+
+```JavaScript
+var lengte = msg.payload.length;
+var waarde1 = '0';
+var waarde2 = '0';
+var waarde3 = '0';
+if (lengte == 3)
+{
+    waarde1 = msg.payload[0];
+    waarde2 = msg.payload[1];
+    waarde3 = msg.payload[2];
+}
+if (lengte == 2)
+{   
+    waarde1 = '0';
+    waarde2 = msg.payload[0];
+    waarde3 = msg.payload[1];
+    
+}
+if (lengte == 1)
+{   
+    waarde1 = '0';
+    waarde2 = '0';
+    waarde3 = msg.payload[0];
+    
+}
+
+
+var totaal = "{\"PWM\":\"1\",\"toestand\":\"" + waarde1 + waarde2 + waarde3 + "\"}";
+msg.payload = totaal;
+
+return msg;
+```
+
 Test dit allemaal uit.
 
 
