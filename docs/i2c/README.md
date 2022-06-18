@@ -12,7 +12,7 @@ title: [I2C communicatie]
 
 ---
 
-## Introductie
+## Introductie_#
 
 In dit deel van de cursus wordt de I²C communication protocol belicht. Waarom je dit zou gebruiken en hoe het te implementeren komt hier aan bod.
 
