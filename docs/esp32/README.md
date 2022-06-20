@@ -158,9 +158,44 @@ De src-map is uw werkmap. Onder de src-map bevindt zich een main.cpp-bestand. Da
 
 ![example image](./images/vsc_19.png "An exemplary image")
 
-In PlatformIO moeten alle Arduino sketches (een project wordt in de Arduino een sketch genoemd) bovenaan in de code straten met het aanroepen van de Arduino bibliotheek door volgend statement ** #include <Arduino.h> **.
+In PlatformIO moeten alle Arduino sketches (een project wordt in de Arduino een sketch genoemd) bovenaan in de code straten met het aanroepen van de Arduino bibliotheek door volgend statement **#include <Arduino.h>**.
 
+**Uploading Code met PlatformIO IDE: ESP32/ESP8266**
 
+Schrijf volgende code in de main.cpp
 
+```cpp
+#include <Arduino.h>
+
+#define LED 13
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(115200);
+  pinMode(LED, OUTPUT);
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  digitalWrite(LED, HIGH);
+  Serial.println("LED is on");
+  delay(1000);
+  digitalWrite(LED, LOW);
+  Serial.println("LED is off");
+  delay(1000);
+}
+```
+
+Nu kunt u op het pictogram Uploaden klikken om de code te compileren en te uploaden. U kunt ook naar het menu PIO-projecttaken gaan en Uploaden selecteren.
+
+![example image](./images/vsc_20.png "An exemplary image")
+
+Als de code successvol is geuploaded, dan wordt volgend bericht weergegeven.
+
+![example image](./images/vsc_21.png "An exemplary image")
+
+Klik nu op het pictogram van de seriële monitor en u zou de huidige LED-status moeten zien afdrukken.
+
+![example image](./images/vsc_22.png "An exemplary image")
 
 
