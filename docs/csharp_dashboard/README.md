@@ -14,5 +14,5 @@ title: [C-sharp dashboard]
 
 ## Introductie
 
-Met Visual Studio kunnen WPF applicaties worden gemaakt. Men kan er ook voor zorgen dat een dergelijke applicatie een dashboard is voor de Nucleo. Op die manier kan er worden voor gezorgd dat de ......
+Met Visual Studio kunnen WPF applicaties worden gemaakt. Men kan er ook voor zorgen dat een dergelijke applicatie een dashboard is voor de Nucleo. Op die manier kan er worden voor gezorgd dat de bla bla ......
 
