@@ -1,5 +1,5 @@
 module.exports = {
-    title: 'WebStekWim',
+    title: 'WebStekWim2',
     description: 'Short introduction Iot',
     themeConfig: {
       nav: [
