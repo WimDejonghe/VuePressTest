@@ -1,9 +1,9 @@
 ---
 author: [Wim Dejonghe]
-description: [Korte introductie tot Micro:Bit met MakeCode Python.]
+description: [Korte introductie tot Micro:Bit met MicroPython.]
 ms.date: [CREATION/UPDATE DATE - mm/dd/yyyy]
 marp: true
-title: [MicroBit MakeCode Python]
+title: [MicroBit MicroPython]
 ---
 
 # Micro:Bit
@@ -23,13 +23,13 @@ Deze creaties hoeven niet complex of technisch hoogstaand te zijn. Het is geweld
 
 De Micro:Bit kan in verschillende talen worden geprogrammeerd. De meest gebruikte programmeeromgeving voor kinderen in de Microsoft MakeCode editor. Met deze omgeving kan er online worden geprogrammeerd in 4 verschillende talen: Grafische blokken, MakeCode JavaScript, MakeCode Python. Wij zullen hier echter als initiatie hier de MicroPython gebruiken. Dit heeft het voordeel dat de gebruiker leert omgaan met de syntax van Python. In deze omgeving wordt een soort operating systeem geïnstalleerd op de Micro:Bit die volledig kan bestuurd worden met de standaard Python taal. 
 
-![example image](./images/mb_hardware.png "An exemplary image")
+![example image](./images/mb_hardware.png "De hardware van de µBit")
 
 ## Activity: De programmeeromgeving
 
 Er bestaan verschillende manieren om de Micro:Bit in de Python programmeertaal te programmeren. Dit kan via Visual Studio Code, dit moet je dan zelf downloaden en installeren op uw computer, maar er bestaat ook een online omgeving voor MicroPython voor de Micro:Bit. Op die manier hoef je niets te installeren op uw computer. Ga hiervoor naar de website : https://microbit.org/ en klik bovenaan op "Let's code" en kies op die pagina voor de link : Python editor.
 
-![example image](./images/microbitorg.png "An exemplary image")
+![example image](./images/microbitorg.png "De online programmeeromgeving die MicroPython ondersteunt.")
 
 Herken hierop:
 <ol>
@@ -40,11 +40,35 @@ Herken hierop:
 
 ### MicroPython code
 
-Initialisatie : Omdat we werken met een Micro:bit moeten we dit steeds aangeven bovenaan de code.  Importeer steeds (*) om alle (hardware)mogelijkheden van de Micro:Bit te gebruiken. Doe dit door bovenaan in de python code te schrijven :
+Initialisatie : Omdat we werken met een Micro:bit moeten we dit steeds aangeven bovenaan de code.  Importeer steeds (*) om (bijna) alle (hardware)mogelijkheden van de Micro:Bit te gebruiken. Doe dit door bovenaan in de Python code te schrijven :
 
 ```python
 from microbit import *
 #Dan de rest van de python code
 ```
 
-Commentaar in Puthon begint met een #.
+Binnen een programmeertaal zijn een aantal zaken belangrijk en keren steeds terug in andere programmeertalen. Dit zijn:
+<ol>
+  <li>Commentaar in Python begint met een #.</li>
+  <li>Variabelen: reserveren van geheugenplaats om data (tijdelijk) in te bewaren</li>
+  <li>Soorten variabelen : type : 
+    <ul>
+        <li>getallen zonder komma: integer</li>
+        <li>getallen met komma: float</li>
+        <li>boolean: variabele die maar twee waarden kan bevatten: 1/0 of True/False </li>
+        <li>string: variabele die tekst kan bevatten (groepering van characters) </li>
+        <li>char: variabele die maar 1 character/symbool kan bevatten </li>
+    </ul>
+  </li>
+  <li>Iteraties: herhalingen:
+    <ul>
+        <li>While Loop: herhaling die steeds wordt herhaald als voorwaarde True is (aantal loops is niet gekend)</li>
+        <li>For Loop: herhaling die steeds wordt herhaald als voorwaarde True is (aantal loops is gekend)</li>
+    </ul>
+  </li>
+  <li>converties of type casting: omzetting van ene type naar een ander type variabele</li>
+  <li>concatenatie van strings: samenvoegen van twee strings tot 1 string (aan elkaar kleven)</li>
+</ol>
+
+
+
