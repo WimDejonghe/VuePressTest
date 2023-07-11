@@ -53,10 +53,10 @@ Binnen een programmeertaal zijn een aantal zaken belangrijk en keren steeds teru
   <li>Variabelen: reserveren van geheugenplaats om data (tijdelijk) in te bewaren</li>
   <li>Soorten variabelen : type : 
     <ul>
-        <li>getallen zonder komma: integer</li>
-        <li>getallen met komma: float</li>
-        <li>boolean: variabele die maar twee waarden kan bevatten: 1/0 of True/False </li>
-        <li>string: variabele die tekst kan bevatten (groepering van characters) </li>
+        <li>Getallen zonder komma: integer</li>
+        <li>Getallen met komma: float</li>
+        <li>Boolean: variabele die maar twee waarden kan bevatten: 1/0 of True/False </li>
+        <li>String: variabele die tekst kan bevatten (groepering van characters) </li>
         <li>char: variabele die maar 1 character/symbool kan bevatten </li>
     </ul>
   </li>
@@ -66,9 +66,17 @@ Binnen een programmeertaal zijn een aantal zaken belangrijk en keren steeds teru
         <li>For Loop: herhaling die steeds wordt herhaald als voorwaarde True is (aantal loops is gekend)</li>
     </ul>
   </li>
-  <li>converties of type casting: omzetting van ene type naar een ander type variabele</li>
-  <li>concatenatie van strings: samenvoegen van twee strings tot 1 string (aan elkaar kleven)</li>
+  <li>Converties of type casting: omzetting van ene type naar een ander type variabele</li>
+  <li>Concatenatie van strings: samenvoegen van twee strings tot 1 string (aan elkaar kleven)</li>
+  <li>Maken van eigen functies met daarbij parameters en return waarden</li>
 </ol>
 
-
+```mermaid
+flowchart TD
+    A[Start] --> B{Is it?}
+    B -->|Yes| C[OK]
+    C --> D[Rethink]
+    D --> B
+    B ---->|No| E[End]
+```
 
