@@ -93,6 +93,12 @@ Deze functies hebben specifieke bertrekking tot de onboard sensoren en actuatore
 from microbit import *
 display.show(<nummer>)
 display.scroll(<nummer>)
+display.show(Image( '90900:'#helderheid individuele LED's
+                    '09990:'
+                    '00909:'
+                    '09090:'
+                    '90090:'
+                    ))
 ```
 Toon hiermee 1 cijfer en experimenteer met getallen bestaande uit meerdere cijfers.
 
@@ -127,13 +133,29 @@ sleep(500)
 display.show(0)
 sleep(500)
 while True:
-  display.scroll('Hello')
+  display.show(Image( '90900:'
+                      '09990:'
+                      '00909:'
+                      '09090:'
+                      '90090:'
+                    ))
+  sleep(500)
+  display.show(Image( '60600:'
+                      '06660:'
+                      '00600:'
+                      '06060:'
+                      '60006:'
+                    ))
+  sleep(500)
+
 ```
-Als je de tussentijden wesnt aante passen, moet je nu overal de 500 aan passen naar een nieuwe waarde. Dit kan éénmalig met een variabele gebeuren.
+Als je de tussentijden wenst aan te passen, moet je nu overal de 500 aan passen naar een nieuwe waarde. Dit kan éénmalig met een variabele gebeuren.
 
 ```python
 from microbit import *
-wacht_tijd=500 #variabele met de naam wacht_tijd en de inhoud ervan is een integer met waarde 500
+wacht_tijd=500 #variabele met de naam wacht_tijd
+                #en de inhoud ervan is een integer met waarde 500
+
 display.show(4)
 sleep(wacht_tijd) 
 display.show(3)
@@ -144,8 +166,22 @@ display.show(1)
 sleep(wacht_tijd)
 display.show(0)
 sleep(wacht_tijd)
+
 while True:
-  display.scroll('Hello')
+  display.show(Image( '90900:'
+                      '09990:'
+                      '00909:'
+                      '09090:'
+                      '90090:'
+                    ))
+  sleep(wacht_tijd)
+  display.show(Image( '60600:'
+                      '06660:'
+                      '00600:'
+                      '06060:'
+                      '60006:'
+                    ))
+  sleep(wacht_tijd)
 ```
 
 **Gebruik van een For-Loop:**
@@ -157,15 +193,147 @@ Beter is hiervoor een FOR-loop (ook een herhalings iteratie) te gebruiken. In ee
 
 ```python
 from microbit import *
-wacht_tijd=500 #variabele met de naam wacht_tijd en de inhoud ervan is een integer met waarde 500
+wacht_tijd=500 #variabele met de naam wacht_tijd
+                #en de inhoud ervan is een integer met waarde 500
 
-for i in range (4): #herhaling van 4 keer met gebruik van een integer variabele met naam i
+for i in range (4): #herhaling van 4 keer 
+                    #met gebruik van een integer 
+                    #(teller)variabele met naam i
   display.show(i)
   sleep(wacht_tijd) 
 
 while True:
-  display.scroll('Hello')
+  display.show(Image( '90900:'
+                      '09990:'
+                      '00909:'
+                      '09090:'
+                      '90090:'
+                    ))
+  sleep(wacht_tijd)
+  display.show(Image( '60600:'
+                      '06660:'
+                      '00600:'
+                      '06060:'
+                      '60006:'
+                    ))
+  sleep(wacht_tijd)
 ```
+
+**Concatenatie:**
+Is het samenvoegen (aan elkaar kleven) van twee string-type variabelen.
+```python
+from microbit import *
+tekst1 = "Hallo"
+tekst2 = " wereld!"
+samengevoegd1 = tekst1 + tekst2
+```
+
+**Type casting:**
+Is het converteren (omvormen) van een variabele naar een ander type (indien mogelijk).
+```python
+from microbit import *
+tekst = "6"
+naarInteger = int(tekst)
+```
+
+### Communicatie µBit via USB kabel (via console/terminal) -statement: input - print
+Het komt zeer veel voor dat er data moet worden uitgewisseld tussen de µBit en de buitenwereld. De meest eenvoudige buitenwereld is de computer waarop de µBit is op aangesloten via een USB kabel. Deze wordt gebruikt om de µBit te programmeren. Maar ook tijdens het runnen van een programma op de µBit is er soms nood om te communiceren met het programma op de µBit. Dit kan in twee richtingen. Data van µBit naar computer (**print**), of data van de computer naar de µBit (**input**). Volgend voorbeeld toont beide mogelijkheden in volgende stappen: 
+<ul>
+<li>µBit vraagt (<b>input</b>) aan de computer de naam van de gebruiker</li>
+<li>µBit slaat die string op in een variabele</li>
+<li>µBit zend (<b>print</b>) die inhoud van die variabele terug naar de console</li>
+<li>µBit vraagt (<b>input</b>) aan de computer om een getal in te geven</li>
+<li>µBit slaat die string (let op : getal wordt hier gezien als een string!!) op in een variabele</li>
+<li>µBit zal die laatste string-variabele omvormen naar een integer-variabele om het  aantal keer een For-Loop moet worden doorlopen.</li>
+</ul>
+
+Let op in de code: het inlezen (input) is steeds van het type String. Aangezien we dit als een getal willen gebruiken moet hier dus een typecasting gebeuren van een string naar een integer. Let wel, dit kan fout lopen indien er geen omzetbaar symbool wordt ingegeven.
+
+```python
+from microbit import *
+
+name=input('Wat is uw naam? ')
+print('Hallo', name)
+aantalKeer=input('Geef een getal: ')
+for i in range(int(aantalKeer)):
+  display.show(Image.HEART)
+  sleep(250)
+  display.show(Image.HEART_SMALL)
+  sleep(250)
+  display.clear()
+  
+```
+![example image](./images/input.png "Het input/print statement")
+
+### Gebeurtenis op basis van drukknoppen
+Binnen de oneindige WHILE-loop kan er steeds nagegaan worden of een drukknop is ingedrukt. Hiervoor gebruiken we een IF-statement (keuze optie: levert altijd een True/False op). Een IF-statement kan op verschillende manieren worden gebruikt, zo is er ook een ELSE mogelijkheid, of zelfs combinaties. We houden het hier eenvoudig.
+
+Binnen de MicroPython van de Micro:Bit kan gebruik gemaakt worden van:
+
+**WAS_pressed**: statements worden slechts één keer uitgevoerd (ook bij blijvend drukken).
+**IS_pressed**: statements worden meerdere keren uitgevoerd bij blijvend drukken.
+
+![example image](./images/if.png "Het IF statement met een conditie")
+
+```python
+from microbit import *
+while True:
+  if button_a.was_pressed():
+    display.scroll('knopA')
+  if button_b.is_pressed():
+    display.scroll('knopB')
+```
+Blijf eens op een knop drukken om het verschil te zien in voorgaande.
+
+Een IF-statement werkt heel veel samen met vergelijkingsoperatoren.
+
+**Vergelijkingsoperatoren**
+![example image](./images/compare.png "Vergelijkingsoperatoren")
+
+Iets uitvoeren als er op beide wordt gedrukt:
+```python
+from microbit import *
+while True:
+  if button_a.is_pressed() and button_b.is_pressed():
+    display.scroll('knopA&B')
+```
+
+Er zijn dus drie combinaties met twee drukknoppen:
+A and notB   / notA and B   / A and B
+Dit behoort tot de logische operatoren.
+
+**Logische operatoren**
+![example image](./images/LogicalOperators.png "Logische operatoren")
+
+Vier toestanden met twee drukknoppen:
+```python
+from microbit import *
+while True:
+  if button_a.is_pressed() and button_b.is_pressed():
+    display.show('A&B')
+  if (button_a.is_pressed() and (not button_b.is_pressed())):
+    display.show('A')
+  if (not(button_a.is_pressed()) and (button_b.is_pressed())):
+    display.show('B')
+  if (not(button_a.is_pressed()) and (not button_b.is_pressed())):
+    display.show('0')
+```
+**Tellen en weergeven van het aantal keren gedrukt op knop A**
+Hier gaan we het aantal kliks op drukknop A bijhouden in een variabele (integer) met de naam teller. Telkens als er op de drukknop A wordt gedrukt moet de waarde van teller uit het geheugen gehaald worden (lezen), en moet daar 1 bij opgeteld worden. Daarna schrijven we het resultaat van die optelling terug naar het geheugen in dezelfde variabele teller (klaar voor de volgende klik).
+Teller kan gereset worden door op drukknop B te drukken.
+```python
+from microbit import *
+#declaratie van de teller variabele 
+#en initialisatie op 0
+teller = 0
+while True:
+  if button_a.was_pressed():
+    teller = teller + 1
+  if button_b.was_pressed():
+    teller = 0
+  display.scroll(teller)  
+```
+
 
 ```mermaid
 flowchart TD
