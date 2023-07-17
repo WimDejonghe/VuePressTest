@@ -9,7 +9,9 @@ Dit is een blockQuote
 > Dit is een blockquote. 
 > We kunnen dit gebruiken om zaken te accentueren.
 
-
+::: note Een nota
+Dit zou een nota moeten zijn
+:::
 
 Veel succes,
 Wim Dejonghe.
