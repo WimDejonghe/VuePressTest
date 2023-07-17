@@ -6,10 +6,12 @@ Dit is een test
 
 Dit is een blockQuote
 
+> ```shell
 > Dit is een blockquote. 
 > We kunnen dit gebruiken om zaken te accentueren.
+> ```
 
-::: tip Een nota
+::: warning Een nota
 Dit zou een nota moeten zijn
 :::
 
@@ -20,6 +22,14 @@ Dit zou een nota moeten zijn
 <div style="background-color:rgba(0, 0, 0, 0.0470588); text-align:center; vertical-align: middle; padding:40px 0; margin-top:30px">
 <a href="/blog">VIEW THE BLOG</a>
 </div>
+
+::: warn
+deprecated, do not use.
+:::
+
+::: tips
+usefull tips for writing markdown
+:::
 
 Veel succes,
 Wim Dejonghe.
