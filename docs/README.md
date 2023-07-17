@@ -12,7 +12,7 @@ Dit is een blockQuote
 > ```
 
 ::: warning Een nota
-Dit zou een nota moeten zijn
+Dit zou een nota moeten zijn, een warning
 :::
 
 <div style="background-color:rgba(0, 0, 0, 0.0470588); text-align:center; vertical-align: middle; padding:40px 0;">
@@ -23,13 +23,14 @@ Dit zou een nota moeten zijn
 <a href="/blog">VIEW THE BLOG</a>
 </div>
 
-::: warn
-deprecated, do not use.
-:::
+> **Blockquote**
+> Deze blockquote kunnen we gebruiken om zaken te accentueren.
+> einde blockquote.
 
-::: tips
-usefull tips for writing markdown
-:::
+<div style="background-color:powderblue; text-align:left; vertical-align:top; padding:0px;">
+<p style="color:red; margin:0">This is a paragraph.</p>
+</div>
+
 
 Veel succes,
 Wim Dejonghe.
