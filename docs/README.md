@@ -1,7 +1,7 @@
 cursus Wim Dejonghe docent VIVES Technology Kortrijk
 
 ::: tip Hello World
-Dit is een test
+Dit is een tip
 :::
 
 Dit is een blockQuote
@@ -12,7 +12,7 @@ Dit is een blockQuote
 > ```
 
 ::: warning Een nota
-Dit zou een nota moeten zijn, een warning
+Dit is een warning
 :::
 
 <div style="background-color:rgba(0, 0, 0, 0.0470588); text-align:center; vertical-align: middle; padding:40px 0;">
@@ -28,7 +28,7 @@ Dit zou een nota moeten zijn, een warning
 > einde blockquote.
 
 <div style="background-color:powderblue; text-align:left; vertical-align:top; padding:0px;">
-<p style="color:red; margin:0">This is a paragraph.</p>
+<p style="color:red; margin:0"><img src="download.png" alt="Attention" width="10" height="10" style="vertical-align:bottom">This is a paragraph.</p>
 </div>
 
 
