@@ -28,7 +28,7 @@ Dit is een warning
 > einde blockquote.
 
 <div style="background-color:powderblue; text-align:left; vertical-align:top; padding:0px;">
-<p style="color:red; margin:0"><img src="download.png" alt="Attention" width="10" height="10" style="vertical-align:bottom">This is a paragraph.</p>
+<p style="color:red; margin:0"><img src="/docs/download.png" alt="Attention" width="20" height="20" style="vertical-align:bottom">This is a paragraph.</p>
 </div>
 
 
