@@ -12,7 +12,7 @@ Dit is een blockQuote
 > ```
 
 ::: warning Een nota
-Dit is een warning
+![example image](./lamp.png "")Dit is een warning
 :::
 
 <div style="background-color:rgba(0, 0, 0, 0.0470588); text-align:center; vertical-align: middle; padding:40px 0;">
@@ -28,7 +28,7 @@ Dit is een warning
 > einde blockquote.
 
 <div style="background-color:powderblue; text-align:left; vertical-align:top; padding:0px;">
-<p style="color:red; margin:0"><img src="/docs/download.png" alt="Attention" width="20" height="20" style="vertical-align:bottom">This is a paragraph.</p>
+<p style="color:red; margin:0"><img src="/docs/download.png" alt="Attention" width="40" height="40" >This is a paragraph.</p>
 </div>
 
 
